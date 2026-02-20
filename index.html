@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Miriã Sculpt™</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#12060b">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" sizes="32x32" href="favicon-32.png">
+
+  <style>
+    :root{
+      --bg:#0b0608;
+      --panel: rgba(255,255,255,.07);
+      --panel2: rgba(255,255,255,.09);
+      --stroke: rgba(255,255,255,.12);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.68);
+      --muted2: rgba(255,255,255,.55);
+
+      --pink:#ff2f86;
+      --pink2:#ff4d9b;
+      --gold:#e9c27d;
+
+      --r:22px;
+      --shadow: 0 18px 45px rgba(0,0,0,.45);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: #000;
+      -webkit-font-smoothing: antialiased;
+      overflow-x:hidden;
+    }
+
+    /* Background image like the reference */
+    .bg{
+      position:fixed;
+      inset:0;
+      background:
+        radial-gradient(1200px 700px at 25% 20%, rgba(255,60,150,.25), transparent 55%),
+        radial-gradient(900px 600px at 80% 75%, rgba(233,194,125,.16), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.78)),
+        url("assets/bg.jpg");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05) contrast(1.04);
+      transform: scale(1.02);
+    }
+    .bg:after{
+      content:"";
+      position:absolute; inset:0;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.10);
+    }
+
+    .wrap{
+      position:relative;
+      min-height:100%;
+      padding: 18px 16px 96px; /* bottom space for tabs */
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+      border: 1px solid var(--stroke);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin: 14px 0;
+    }
+    .row{ display:flex; gap:12px; align-items:center; }
+    .space{ justify-content:space-between; }
+    .col{ display:flex; flex-direction:column; gap:8px; }
+    .muted{ color:var(--muted); }
+    .muted2{ color:var(--muted2); }
+    h1,h2,h3{ margin:0; }
+    h2{ font-size:18px; letter-spacing:.2px;}
+    h3{ font-size:15px; letter-spacing:.2px;}
+    .small{ font-size:12px; }
+
+    /* Top hero */
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding: 16px;
+    }
+    .hero .left{
+      display:flex; gap:12px; align-items:center;
+    }
+    .appIcon{
+      width:56px; height:56px; border-radius:16px;
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 12px 35px rgba(0,0,0,.55);
+      overflow:hidden;
+      background: #14070c;
+      flex:0 0 auto;
+    }
+    .appIcon img{ width:100%; height:100%; object-fit:cover; }
+
+    .title{
+      font-size:24px;
+      font-weight:800;
+      line-height:1.05;
+    }
+    .slogan{
+      margin-top:4px;
+      font-size:14px;
+      color: rgba(255,255,255,.75);
+    }
+    .desc{
+      margin-top:8px;
+      font-size:13px;
+      color: rgba(255,255,255,.68);
+    }
+
+    .badge{
+      width:100px; height:100px;
+      border-radius:999px;
+      background: radial-gradient(circle at 30% 25%, rgba(255,70,160,.35), rgba(0,0,0,.12)),
+                  linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.14);
+      display:flex; align-items:center; justify-content:center;
+      text-align:center;
+      padding:12px;
+      color: rgba(255,255,255,.86);
+      font-weight:700;
+      box-shadow: 0 20px 55px rgba(0,0,0,.45);
+      flex:0 0 auto;
+    }
+
+    /* Buttons */
+    button, .btn{
+      border:0;
+      cursor:pointer;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      transition: transform .08s ease, background .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      font-weight:700;
+    }
+    button:active, .btn:active{ transform: scale(.98); }
+    .btnPink{
+      background: linear-gradient(180deg, rgba(255,47,134,.95), rgba(255,47,134,.70));
+      border:1px solid rgba(255,255,255,.15);
+      color:#fff;
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.05);
+    }
+    .btnMini{ padding:8px 12px; font-size:12px; font-weight:800; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,47,134,.92), rgba(255,47,134,.60));
+      border: 1px solid rgba(255,255,255,.12);
+      color:#fff;
+      font-weight:900;
+      box-shadow: 0 12px 30px rgba(255,47,134,.18);
+    }
+
+    /* Shortcuts area */
+    .shortcutsGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .shortcut{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      border-radius: 999px;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(255,47,134,.92), rgba(255,47,134,.62));
+      border: 1px solid rgba(255,255,255,.12);
+      font-weight:900;
+      box-shadow: 0 12px 30px rgba(255,47,134,.16);
+    }
+    .shortcut.dark{
+      background: rgba(255,255,255,.06);
+      box-shadow: none;
+      color: rgba(255,255,255,.90);
+    }
+
+    /* Section switcher (tabs) */
+    .section{ display:none; }
+    .section.active{ display:block; }
+
+    /* Bottom tabs */
+    .tabs{
+      position:fixed;
+      left:0; right:0; bottom:0;
+      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.65) 25%, rgba(0,0,0,.86));
+      backdrop-filter: blur(12px);
+      z-index: 50;
+    }
+    .tabsInner{
+      max-width:560px;
+      margin: 0 auto;
+      display:flex;
+      gap:10px;
+    }
+    .tab{
+      flex:1;
+      border-radius: 18px;
+      padding: 10px 6px;
+      text-align:center;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.80);
+      font-weight:900;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      align-items:center;
+      justify-content:center;
+      min-height:58px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tab.active{
+      background: radial-gradient(circle at 30% 20%, rgba(255,47,134,.35), rgba(255,255,255,.06));
+      border-color: rgba(255,255,255,.16);
+      color:#fff;
+      box-shadow: 0 14px 36px rgba(0,0,0,.35);
+    }
+    .tab .ico{ font-size:18px; line-height:1; }
+    .tab .lbl{ font-size:12px; }
+
+    /* Forms */
+    label{ display:block; font-size:12px; color: rgba(255,255,255,.72); margin: 8px 0 6px; font-weight:800; }
+    input, select, textarea{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.20);
+      color: var(--text);
+      outline:none;
+      box-shadow: inset 0 0 0 999px rgba(255,255,255,.03);
+    }
+    textarea{ min-height:90px; resize:vertical; }
+
+    .progress{
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      margin-top:10px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(255,47,134,.95), rgba(233,194,125,.95));
+      transition: width .25s ease;
+    }
+
+    /* Weekday pills */
+    .weekPills{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .weekPills .day{
+      padding: 8px 12px;
+      font-size:12px;
+      font-weight:900;
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.86);
+    }
+    .weekPills .day.active{
+      background: radial-gradient(circle at 30% 20%, rgba(255,47,134,.35), rgba(255,255,255,.06));
+      border-color: rgba(255,255,255,.16);
+      color:#fff;
+    }
+
+    /* Exercise list */
+    .ex{
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 12px;
+      margin-top:10px;
+    }
+    .exTop{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; }
+    .exName{ font-weight:900; }
+    .exMeta{ color: rgba(255,255,255,.70); font-size:12px; margin-top:4px; }
+    .exTip{ color: rgba(255,255,255,.66); font-size:12px; margin-top:8px; }
+    .exActions{ display:flex; gap:8px; align-items:center; }
+    a.video{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight:900;
+      color:#fff;
+      background: rgba(233,194,125,.18);
+      border: 1px solid rgba(233,194,125,.26);
+      white-space:nowrap;
+    }
+
+    /* Data rows */
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    .stat{
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 86px;
+    }
+    .stat .k{ font-size:12px; color: rgba(255,255,255,.68); font-weight:800; }
+    .stat .v{ font-size:20px; font-weight:1000; margin-top:6px; }
+    .stat .s{ font-size:12px; color: rgba(255,255,255,.62); margin-top:2px; }
+
+    .divider{ height:1px; background: rgba(255,255,255,.10); margin: 12px 0; }
+
+    /* Small alert */
+    .note{
+      padding: 10px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.70);
+      font-size:12px;
+      line-height:1.35;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" aria-hidden="true"></div>
+
+  <div class="wrap">
+
+    <!-- INÍCIO -->
+    <section id="sec-inicio" class="section active">
+
+      <div class="card hero">
+        <div class="row space">
+          <div class="left">
+            <div class="appIcon" title="Miriã Sculpt™">
+              <img src="icon-192.png" alt="Ícone Miriã Sculpt">
+            </div>
+            <div>
+              <div class="title">Miriã Sculpt™</div>
+              <div class="slogan">Esculpindo curvas com estratégia.</div>
+              <div class="desc">Treino + cargas + água + proteína + intestino + medidas + fotos (salva no seu celular)</div>
+            </div>
+          </div>
+          <div class="badge">Atalhos<br><span class="muted2" style="font-weight:800">um toque e pronto</span> ✨</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>⚡ Atalhos</h2>
+            <div class="muted">Clique e vá direto pro que você quer</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="scrollTopSmooth()">⬆️ topo</button>
+        </div>
+
+        <div class="shortcutsGrid">
+          <div class="shortcut" onclick="go('agua')">💧 Água</div>
+          <div class="shortcut" onclick="go('proteina')">🥩 Proteína</div>
+          <div class="shortcut" onclick="go('intestino')">🚽 Intestino</div>
+          <div class="shortcut" onclick="go('medidas')">📏 Medidas</div>
+          <div class="shortcut dark" onclick="go('treino')">🏋️ Treino</div>
+          <div class="shortcut dark" onclick="go('fotos')">📸 Fotos</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="note">
+          🎯 <b>Foco Ampulheta (B):</b> costas + postura + core (vácuo) + glúteo (hip thrust) = cintura mais marcada <b>sem exageros</b>.<br>
+          📸 <b>Fotos e medidas:</b> recomendado a cada <b>15 dias</b> (mesma luz/posição).
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📊 Painel do dia</h2>
+        <div class="grid2" style="margin-top:10px">
+          <div class="stat">
+            <div class="k">💧 Água hoje</div>
+            <div class="v"><span id="aguaHoje">0</span> <span class="small">ml</span></div>
+            <div class="s">Meta: <span id="aguaMetaLabel">2500</span> ml</div>
+          </div>
+          <div class="stat">
+            <div class="k">🥩 Proteína hoje</div>
+            <div class="v"><span id="protHoje">0</span> <span class="small">g</span></div>
+            <div class="s">Meta: <span id="protMetaLabel">100</span> g</div>
+          </div>
+          <div class="stat">
+            <div class="k">🚽 Intestino</div>
+            <div class="v" id="intHoje">—</div>
+            <div class="s" id="chiaHoje">Chia: —</div>
+          </div>
+          <div class="stat">
+            <div class="k">🍑 Proporção ampulheta</div>
+            <div class="v" id="ampVal">—</div>
+            <div class="s" id="ampNota">adicione medidas</div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- TREINO -->
+    <section id="sec-treino" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>📅 Treino SEG–SEX (Ampulheta)</h2>
+            <div class="muted">Clique no dia e veja a lista. Você pode salvar carga/reps.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="openCargaModal()">📝 Registrar cargas</button>
+        </div>
+
+        <div class="weekPills" id="weekPills"></div>
+
+        <div class="note" style="margin-top:10px">
+          ⏱️ <b>Descanso:</b> principais 1m–1m30 • acessórios 45s–1m<br>
+          🍑 <b>Regra:</b> se completou reps com folga → sobe peso na próxima.
+        </div>
+
+        <div id="treinoLista"></div>
+      </div>
+    </section>
+
+    <!-- ÁGUA -->
+    <section id="sec-agua" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>💧 Controle de água</h2>
+            <div class="muted">Rápido, simples e com média de 7 dias.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="zerarAgua()">🧹 Zerar hoje</button>
+        </div>
+
+        <label>🎯 Meta diária (ml)</label>
+        <input type="number" id="aguaMeta" value="2500">
+
+        <label>➕ Adicionar manualmente (ml)</label>
+        <input type="number" id="aguaManual" placeholder="Ex: 300">
+
+        <div class="row" style="margin-top:10px; flex-wrap:wrap">
+          <button class="btnPink" onclick="addAguaManual()">➕ Somar</button>
+          <button onclick="addAgua(470)">+470 ml</button>
+          <button onclick="addAgua(250)">+250 ml</button>
+          <button class="btnGhost" onclick="desfazerAgua()">↩️ Desfazer</button>
+        </div>
+
+        <div class="progress"><div class="bar" id="aguaBar"></div></div>
+        <div class="row space" style="margin-top:10px">
+          <div class="muted">Hoje: <b id="aguaStatus">0 ml</b></div>
+          <div class="muted2 small">📊 Média 7 dias: <b id="aguaMedia">0 ml</b></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROTEÍNA -->
+    <section id="sec-proteina" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>🥩 Proteína (automática)</h2>
+            <div class="muted">Escolha o alimento + quantidade e o app soma sozinho.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="zerarProt()">🧹 Zerar hoje</button>
+        </div>
+
+        <label>🎯 Meta de proteína (g/dia)</label>
+        <input type="number" id="protMeta" value="100">
+
+        <div class="divider"></div>
+
+        <h3>🍽 Adicionar item</h3>
+
+        <label>Alimento</label>
+        <select id="protItem">
+          <option value="frango">🍗 Frango (31g / 100g)</option>
+          <option value="carne">🥩 Carne (26g / 100g)</option>
+          <option value="ovo">🥚 Ovo (6g / unidade)</option>
+          <option value="iog">🥛 Iogurte (10g / unidade)</option>
+          <option value="queijo">🧀 Queijo (25g / 100g)</option>
+          <option value="whey">🥤 Whey (20g / scoop)</option>
+        </select>
+
+        <label id="protQtdLabel">Quantidade</label>
+        <input type="number" id="protQtd" placeholder="Ex: 150">
+
+        <div class="row" style="margin-top:10px; flex-wrap:wrap">
+          <button class="btnPink" onclick="addProtItem()">➕ Adicionar</button>
+          <button class="btnGhost" onclick="desfazerProt()">↩️ Desfazer</button>
+        </div>
+
+        <div class="progress"><div class="bar" id="protBar"></div></div>
+
+        <div class="row space" style="margin-top:10px">
+          <div>
+            <div class="muted">Hoje: <b><span id="protStatus">0</span> g</b></div>
+            <div class="muted2 small">Faltam: <b><span id="protFaltam">0</span> g</b></div>
+          </div>
+          <div class="muted2 small">📊 Média 7 dias: <b><span id="protMedia">0</span> g</b></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>📋 Itens de hoje</h3>
+        <div id="protLista" class="small muted2"></div>
+
+      </div>
+    </section>
+
+    <!-- INTESTINO -->
+    <section id="sec-intestino" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>🚽 Controle intestinal</h2>
+            <div class="muted">Marque e acompanhe os últimos dias.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="limparIntestino()">🧹 Limpar</button>
+        </div>
+
+        <label>Fui ao banheiro hoje?</label>
+        <select id="intSel">
+          <option value="nao">Não</option>
+          <option value="sim">Sim</option>
+          <option value="pouco">Pouquinho</option>
+        </select>
+
+        <label style="margin-top:10px">
+          <input type="checkbox" id="chiaCheck" style="width:auto; margin-right:8px"> Tomei água morna + chia
+        </label>
+
+        <div class="row" style="margin-top:10px">
+          <button class="btnPink" onclick="salvarIntestino()">Salvar</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="small muted2" id="intHist"></div>
+      </div>
+    </section>
+
+    <!-- MEDIDAS -->
+    <section id="sec-medidas" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>📏 Medidas + ampulheta</h2>
+            <div class="muted">Cintura e glúteo para calcular a proporção.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="exportar()">⬇️ Exportar</button>
+        </div>
+
+        <label>Peso (kg)</label>
+        <input type="number" id="mPeso" placeholder="Ex: 56.9">
+
+        <label>Cintura (cm)</label>
+        <input type="number" id="mCint" placeholder="Ex: 72">
+
+        <label>Abdômen (cm)</label>
+        <input type="number" id="mAbd" placeholder="Ex: 81">
+
+        <label>Glúteo (cm)</label>
+        <input type="number" id="mGlu" placeholder="Ex: 96">
+
+        <div class="row" style="margin-top:10px; flex-wrap:wrap">
+          <button class="btnPink" onclick="salvarMedidas()">Salvar</button>
+          <button class="btnGhost" onclick="limparMedidas()">🧹 Limpar tudo</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="row space">
+          <div>
+            <div class="muted">🍑 Ampulheta (Glúteo ÷ Cintura): <b id="ampResult">—</b></div>
+            <div class="muted2 small" id="ampText">adicione cintura e glúteo</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <h3>📈 Evolução do glúteo (últimos registros)</h3>
+        <div id="gluteoHist" class="small muted2"></div>
+
+      </div>
+    </section>
+
+    <!-- FOTOS -->
+    <section id="sec-fotos" class="section">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <h2>📸 Fotos</h2>
+            <div class="muted">Guarde links/observações das suas fotos (15 em 15 dias).</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="limparFotos()">🧹 Limpar</button>
+        </div>
+
+        <label>Link da foto (Google Fotos / Drive / etc.)</label>
+        <input type="url" id="fotoUrl" placeholder="Cole aqui o link">
+
+        <label>Observação (ex: 15 dias, mesma luz)</label>
+        <input type="text" id="fotoObs" placeholder="Ex: frente/lado/costas">
+
+        <div class="row" style="margin-top:10px">
+          <button class="btnPink" onclick="salvarFoto()">➕ Salvar</button>
+        </div>
+
+        <div class="divider"></div>
+        <div id="fotoHist" class="small muted2"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom Tabs -->
+  <nav class="tabs" aria-label="Navegação">
+    <div class="tabsInner">
+      <div class="tab active" data-to="inicio" onclick="go('inicio')"><div class="ico">🏠</div><div class="lbl">Início</div></div>
+      <div class="tab" data-to="treino" onclick="go('treino')"><div class="ico">🏋️</div><div class="lbl">Treino</div></div>
+      <div class="tab" data-to="agua" onclick="go('agua')"><div class="ico">💧</div><div class="lbl">Água</div></div>
+      <div class="tab" data-to="medidas" onclick="go('medidas')"><div class="ico">📏</div><div class="lbl">Medidas</div></div>
+      <div class="tab" data-to="fotos" onclick="go('fotos')"><div class="ico">📸</div><div class="lbl">Fotos</div></div>
+    </div>
+  </nav>
+
+  <!-- Modal registrar cargas -->
+  <div id="modal" style="display:none; position:fixed; inset:0; z-index:80;">
+    <div style="position:absolute; inset:0; background: rgba(0,0,0,.65); backdrop-filter: blur(8px);" onclick="closeModal()"></div>
+    <div style="position:relative; max-width:560px; margin: 0 auto; padding: 18px 16px;">
+      <div class="card" style="margin-top: 20px;">
+        <div class="row space">
+          <div>
+            <h2>📝 Registrar cargas</h2>
+            <div class="muted small">Salva no seu celular. Ex: “Cadeira flexora: 25kg”.</div>
+          </div>
+          <button class="btnGhost btnMini" onclick="closeModal()">Fechar</button>
+        </div>
+        <label>Dia</label>
+        <select id="cDia"></select>
+
+        <label>Exercício</label>
+        <select id="cEx"></select>
+
+        <label>Carga (kg) / observação</label>
+        <input id="cCarga" placeholder="Ex: 25kg | 3×12">
+
+        <div class="row" style="margin-top:10px; flex-wrap:wrap">
+          <button class="btnPink" onclick="salvarCarga()">Salvar</button>
+          <button class="btnGhost" onclick="apagarCarga()">Apagar</button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="small muted2" id="cStatus"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ------------------ Utils ------------------ */
+const KEY = "miria_sculpt_v1";
+function hoje(){ return new Date().toISOString().slice(0,10); }
+function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
+function fmt(n, d=1){
+  const x = Number(n);
+  if(!isFinite(x)) return "—";
+  return (Math.round(x*Math.pow(10,d))/Math.pow(10,d)).toFixed(d);
+}
+function scrollTopSmooth(){ window.scrollTo({top:0, behavior:"smooth"}); }
+
+/* ------------------ Data ------------------ */
+let data = JSON.parse(localStorage.getItem(KEY) || "{}");
+data.agua = data.agua || {};
+data.prot = data.prot || {};
+data.intestino = data.intestino || {};
+data.medidas = data.medidas || [];
+data.fotos = data.fotos || [];
+data.cargas = data.cargas || {}; // { "SEG|Cadeira Flexora": "25kg" }
+
+function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
+
+/* ------------------ Navigation (NO TRAVA) ------------------ */
+function go(name){
+  // switch sections
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  const sec = document.getElementById("sec-"+name);
+  if(sec) sec.classList.add("active");
+
+  // highlight tab
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  const tab = document.querySelector(`.tab[data-to="${name}"]`);
+  if(tab) tab.classList.add("active");
+
+  // if shortcut goes to proteina/intestino, keep bottom tab as inicio to avoid confusion
+  if(name==="proteina" || name==="intestino"){
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+    document.querySelector(`.tab[data-to="inicio"]`).classList.add("active");
+  }
+
+  // scroll to top of page so it feels like app navigation
+  window.scrollTo({top:0, behavior:"instant"});
+}
+
+/* ------------------ Água ------------------ */
+function ensureAguaDay(){
+  if(!data.agua[hoje()]) data.agua[hoje()] = { total:0, stack:[] };
+}
+function addAgua(v){
+  ensureAguaDay();
+  data.agua[hoje()].total += v;
+  data.agua[hoje()].stack.push(v);
+  save(); renderAgua(); renderDashboard();
+}
+function addAguaManual(){
+  const v = Number(document.getElementById("aguaManual").value || 0);
+  if(v>0){ addAgua(v); document.getElementById("aguaManual").value=""; }
+}
+function desfazerAgua(){
+  ensureAguaDay();
+  const last = data.agua[hoje()].stack.pop();
+  if(last){ data.agua[hoje()].total -= last; }
+  save(); renderAgua(); renderDashboard();
+}
+function zerarAgua(){
+  data.agua[hoje()] = { total:0, stack:[] };
+  save(); renderAgua(); renderDashboard();
+}
+function aguaMedia7(){
+  let sum=0, cnt=0;
+  for(let i=0;i<7;i++){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    if(data.agua[k]){ sum += Number(data.agua[k].total||0); cnt++; }
+  }
+  return cnt? Math.round(sum/cnt) : 0;
+}
+function renderAgua(){
+  ensureAguaDay();
+  const meta = Number(document.getElementById("aguaMeta").value || 2500);
+  const total = Number(data.agua[hoje()].total||0);
+
+  document.getElementById("aguaStatus").textContent = total + " ml";
+  const pct = clamp((total/meta)*100, 0, 100);
+  document.getElementById("aguaBar").style.width = pct + "%";
+  document.getElementById("aguaMedia").textContent = aguaMedia7() + " ml";
+
+  document.getElementById("aguaHoje").textContent = total;
+  document.getElementById("aguaMetaLabel").textContent = meta;
+}
+
+/* ------------------ Proteína automática ------------------ */
+const fatores = {
+  frango: { tipo:"g", por:100, prot:31 },
+  carne:  { tipo:"g", por:100, prot:26 },
+  ovo:    { tipo:"un", por:1,   prot:6  },
+  iog:    { tipo:"un", por:1,   prot:10 },
+  queijo: { tipo:"g", por:100, prot:25 },
+  whey:   { tipo:"sc", por:1,   prot:20 }
+};
+
+function ensureProtDay(){
+  if(!data.prot[hoje()]) data.prot[hoje()] = { total:0, stack:[], items:[] };
+}
+function protMedia7(){
+  let sum=0, cnt=0;
+  for(let i=0;i<7;i++){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    const k = d.toISOString().slice(0,10);
+    if(data.prot[k]){ sum += Number(data.prot[k].total||0); cnt++; }
+  }
+  return cnt? Math.round(sum/cnt) : 0;
+}
+function calcProt(item, qtd){
+  const cfg = fatores[item];
+  qtd = Number(qtd||0);
+  if(!cfg || qtd<=0) return 0;
+  if(cfg.por===1) return qtd * cfg.prot;
+  return (qtd / cfg.por) * cfg.prot;
+}
+function updateProtQtdLabel(){
+  const item = document.getElementById("protItem").value;
+  const cfg = fatores[item];
+  const label = (cfg.tipo==="g") ? "Quantidade (g)" :
+                (cfg.tipo==="un") ? "Quantidade (unidades)" : "Quantidade (scoops)";
+  document.getElementById("protQtdLabel").textContent = label;
+  document.getElementById("protQtd").placeholder = (cfg.tipo==="g") ? "Ex: 150" : "Ex: 2";
+}
+document.getElementById("protItem").addEventListener("change", updateProtQtdLabel);
+
+function addProtItem(){
+  ensureProtDay();
+  const item = document.getElementById("protItem").value;
+  const qtd = Number(document.getElementById("protQtd").value || 0);
+  if(qtd<=0) return;
+
+  const prot = calcProt(item, qtd);
+  const nome = document.getElementById("protItem").selectedOptions[0].textContent;
+  data.prot[hoje()].total += prot;
+  data.prot[hoje()].stack.push({item,qtd,prot});
+  data.prot[hoje()].items.push({ts:Date.now(), item, nome, qtd, prot});
+  save();
+  document.getElementById("protQtd").value="";
+  renderProt(); renderDashboard();
+}
+function desfazerProt(){
+  ensureProtDay();
+  const last = data.prot[hoje()].stack.pop();
+  if(last){
+    data.prot[hoje()].total -= last.prot;
+    // remove last matching item from items list
+    data.prot[hoje()].items.pop();
+  }
+  save(); renderProt(); renderDashboard();
+}
+function zerarProt(){
+  data.prot[hoje()] = { total:0, stack:[], items:[] };
+  save(); renderProt(); renderDashboard();
+}
+function renderProt(){
+  ensureProtDay();
+  const meta = Number(document.getElementById("protMeta").value || 100);
+  const total = Number(data.prot[hoje()].total||0);
+  const pct = clamp((total/meta)*100, 0, 100);
+
+  document.getElementById("protStatus").textContent = Math.round(total);
+  document.getElementById("protFaltam").textContent = Math.max(0, Math.round(meta - total));
+  document.getElementById("protBar").style.width = pct + "%";
+  document.getElementById("protMedia").textContent = protMedia7();
+
+  document.getElementById("protHoje").textContent = Math.round(total);
+  document.getElementById("protMetaLabel").textContent = meta;
+
+  // list
+  const items = (data.prot[hoje()].items||[]);
+  if(!items.length){
+    document.getElementById("protLista").innerHTML = "Sem itens hoje. 👑";
+  }else{
+    document.getElementById("protLista").innerHTML = items.map(it=>{
+      const p = Math.round(it.prot);
+      return `• ${it.nome} — <b>${it.qtd}</b> → <b>${p}g</b>`;
+    }).join("<br>");
+  }
+}
+
+/* ------------------ Intestino ------------------ */
+function salvarIntestino(){
+  data.intestino[hoje()] = {
+    foi: document.getElementById("intSel").value,
+    chia: document.getElementById("chiaCheck").checked
+  };
+  save(); renderIntestino(); renderDashboard();
+}
+function limparIntestino(){
+  data.intestino = {};
+  save(); renderIntestino(); renderDashboard();
+}
+function renderIntestino(){
+  const rec = data.intestino[hoje()];
+  if(rec){
+    document.getElementById("intSel").value = rec.foi;
+    document.getElementById("chiaCheck").checked = !!rec.chia;
+  }
+  const entries = Object.entries(data.intestino).sort((a,b)=>a[0].localeCompare(b[0]));
+  const last = entries.slice(-7).reverse();
+  document.getElementById("intHist").innerHTML = last.length
+    ? last.map(([d,v])=>`<b>${d}</b> — ${v.foi}${v.chia? " + chia":""}`).join("<br>")
+    : "Sem histórico ainda.";
+}
+
+/* ------------------ Medidas + ampulheta ------------------ */
+function salvarMedidas(){
+  const rec = {
+    data: hoje(),
+    peso: Number(document.getElementById("mPeso").value || 0),
+    cintura: Number(document.getElementById("mCint").value || 0),
+    abdomen: Number(document.getElementById("mAbd").value || 0),
+    gluteo: Number(document.getElementById("mGlu").value || 0),
+  };
+  // basic validation
+  if(!rec.cintura || !rec.gluteo){ alert("Preencha pelo menos Cintura e Glúteo."); return; }
+  data.medidas.push(rec);
+  save();
+  renderMedidas(); renderDashboard();
+}
+function limparMedidas(){
+  data.medidas = [];
+  save();
+  renderMedidas(); renderDashboard();
+}
+function ampNota(val){
+  // reference: higher ratio => stronger hourglass
+  if(!isFinite(val)) return "—";
+  if(val >= 1.35) return "Ampulheta forte";
+  if(val >= 1.28) return "Ampulheta boa";
+  if(val >= 1.20) return "Em construção";
+  return "Foco em glúteo + postura";
+}
+function renderMedidas(){
+  const list = data.medidas || [];
+  if(list.length){
+    const last = list[list.length-1];
+    document.getElementById("mPeso").value = last.peso || "";
+    document.getElementById("mCint").value = last.cintura || "";
+    document.getElementById("mAbd").value = last.abdomen || "";
+    document.getElementById("mGlu").value = last.gluteo || "";
+    const ratio = last.gluteo / last.cintura;
+    document.getElementById("ampResult").textContent = fmt(ratio,2);
+    document.getElementById("ampText").textContent = ampNota(ratio);
+    document.getElementById("ampVal").textContent = fmt(ratio,2);
+    document.getElementById("ampNota").textContent = ampNota(ratio);
+  }else{
+    document.getElementById("ampResult").textContent = "—";
+    document.getElementById("ampText").textContent = "adicione cintura e glúteo";
+    document.getElementById("ampVal").textContent = "—";
+    document.getElementById("ampNota").textContent = "adicione medidas";
+  }
+
+  const last10 = list.slice(-10).reverse();
+  document.getElementById("gluteoHist").innerHTML = last10.length
+    ? last10.map(r=>`• <b>${r.data}</b> — glúteo: <b>${r.gluteo}cm</b> • cintura: ${r.cintura}cm`).join("<br>")
+    : "Sem registros ainda.";
+}
+
+/* ------------------ Fotos (links) ------------------ */
+function salvarFoto(){
+  const url = (document.getElementById("fotoUrl").value || "").trim();
+  const obs = (document.getElementById("fotoObs").value || "").trim();
+  if(!url){ alert("Cole o link da foto."); return; }
+  data.fotos.push({data: hoje(), url, obs});
+  save();
+  document.getElementById("fotoUrl").value="";
+  document.getElementById("fotoObs").value="";
+  renderFotos();
+}
+function limparFotos(){
+  data.fotos = [];
+  save(); renderFotos();
+}
+function renderFotos(){
+  const list = (data.fotos||[]).slice(-15).reverse();
+  document.getElementById("fotoHist").innerHTML = list.length
+    ? list.map(f=>`• <b>${f.data}</b> — <a class="video" href="${f.url}" target="_blank" rel="noopener">Abrir</a> <span class="muted2">${f.obs||""}</span>`).join("<br><br>")
+    : "Sem links ainda.";
+}
+
+/* ------------------ Treino data ------------------ */
+const treino = {
+  "SEG": {
+    titulo: "Segunda • Glúteo / Posterior 🍑",
+    itens: [
+      { nome:"Cadeira Flexora", sets:"3×12", alvo:"20–25kg", tip:"Controle total. Sem tirar o quadril do banco.", q:"cadeira flexora como fazer correto" },
+      { nome:"Stiff com halter", sets:"3×12", alvo:"6–8kg cada lado", tip:"Coluna neutra. Desce devagar. Sente alongar posterior.", q:"stiff com halter como fazer" },
+      { nome:"Elevação pélvica (Hip Thrust)", sets:"4×10", alvo:"20kg (meta evoluir)", tip:"Pausa 1s no topo. Não arquear lombar.", q:"elevação pélvica hip thrust como fazer" },
+      { nome:"Abdutora máquina", sets:"3×15", alvo:"30–35kg", tip:"Inclina levemente pra frente e segura 1s aberta.", q:"abdutora máquina como usar" },
+      { nome:"Cardio (opcional)", sets:"12 min", alvo:"esteira inclinada", tip:"Leve/moderado pra ajudar barriga sem perder glúteo.", q:"esteira inclinada caminhada como fazer" }
+    ]
+  },
+  "TER": {
+    titulo: "Terça • Peito / Ombro + Vácuo",
+    itens: [
+      { nome:"Supino inclinado máquina", sets:"3×12", alvo:"15–20kg", tip:"Peito aberto. Ombros pra baixo.", q:"supino inclinado máquina como fazer" },
+      { nome:"Crucifixo máquina", sets:"3×12", alvo:"15kg", tip:"Controlado. Não esticar demais.", q:"crucifixo máquina como fazer" },
+      { nome:"Elevação lateral halter", sets:"3×12", alvo:"4kg", tip:"Sobe até linha do ombro. Sem balançar.", q:"elevação lateral halter como fazer" },
+      { nome:"Desenvolvimento ombro halter", sets:"3×10", alvo:"6kg", tip:"Controle. Não jogar a lombar.", q:"desenvolvimento ombro halter como fazer" },
+      { nome:"Vácuo abdominal", sets:"3×20s", alvo:"cintura marcada", tip:"Solta o ar e puxa o umbigo pra dentro.", q:"vacuum abdominal como fazer" }
+    ]
+  },
+  "QUA": {
+    titulo: "Quarta • Quadríceps + Glúteo",
+    itens: [
+      { nome:"Leg Press", sets:"4×12", alvo:"80kg (meta 100–110kg)", tip:"Pé um pouco mais alto. Não travar joelho.", q:"leg press como fazer correto" },
+      { nome:"Agachamento no Smith", sets:"3×10", alvo:"10kg cada lado", tip:"Pés levemente à frente. Desce controlado.", q:"agachamento no smith como fazer" },
+      { nome:"Cadeira Extensora", sets:"3×12", alvo:"25kg", tip:"Sobe forte e desce controlando.", q:"cadeira extensora como fazer" },
+      { nome:"Abdutora", sets:"3×15", alvo:"30–35kg", tip:"Foco no glúteo lateral (ajuda ampulheta).", q:"abdutora máquina como usar" }
+    ]
+  },
+  "QUI": {
+    titulo: "Quinta • Costas + Postura + Core",
+    itens: [
+      { nome:"Puxada frente", sets:"3×12", alvo:"25kg", tip:"Puxa com cotovelos. Ombros pra baixo.", q:"puxada frente na polia como fazer" },
+      { nome:"Remada baixa", sets:"3×12", alvo:"25kg", tip:"Segura 1s atrás. Postura firme.", q:"remada baixa na polia como fazer" },
+      { nome:"Face Pull", sets:"3×15", alvo:"leve/médio", tip:"Postura e colo bonito. Cotovelos altos.", q:"face pull como fazer" },
+      { nome:"Prancha", sets:"3×40s", alvo:"core firme", tip:"Barriga pra dentro. Sem cair lombar.", q:"prancha abdominal como fazer" }
+    ]
+  },
+  "SEX": {
+    titulo: "Sexta • Glúteo (pesado) + Posterior 🍑",
+    itens: [
+      { nome:"Elevação pélvica (Hip Thrust) pesado", sets:"4×8", alvo:"30kg (meta 45kg)", tip:"Forma perfeita. Pausa no topo.", q:"hip thrust como fazer" },
+      { nome:"Stiff", sets:"3×12", alvo:"8kg cada lado", tip:"Controle, coluna neutra.", q:"stiff com halter como fazer" },
+      { nome:"Afundo andando", sets:"3×10 cada perna", alvo:"4–6kg", tip:"Tronco levemente à frente, calcanhar empurra.", q:"afundo andando como fazer" },
+      { nome:"Abdutora", sets:"4×15", alvo:"35–40kg", tip:"Segura 1s aberta. Glúteo lateral.", q:"abdutora máquina como usar" },
+      { nome:"Vácuo abdominal", sets:"3×20s", alvo:"cintura", tip:"Consistência 3×/semana.", q:"vacuum abdominal como fazer" }
+    ]
+  }
+};
+
+const dias = ["SEG","TER","QUA","QUI","SEX"];
+let diaAtivo = "SEG";
+
+function videoLink(q){
+  const query = encodeURIComponent(q + " português");
+  return "https://www.youtube.com/results?search_query=" + query;
+}
+
+function renderWeekPills(){
+  const el = document.getElementById("weekPills");
+  el.innerHTML = dias.map(d=>{
+    const cls = "day" + (d===diaAtivo ? " active":"");
+    return `<button class="${cls}" onclick="setDia('${d}')">${d}</button>`;
+  }).join("");
+}
+
+function setDia(d){
+  diaAtivo = d;
+  renderWeekPills();
+  renderTreino();
+  // keep user at the content area
+  const node = document.getElementById("treinoLista");
+  if(node) node.scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function cargaKey(d, ex){ return d+"|"+ex; }
+
+function renderTreino(){
+  const info = treino[diaAtivo];
+  const listEl = document.getElementById("treinoLista");
+  listEl.innerHTML = `
+    <div class="ex" style="margin-top:14px">
+      <div class="row space">
+        <div>
+          <div class="muted2 small">Clique em “Ver vídeo (PT)” para execução correta</div>
+          <h2 style="margin-top:6px">${info.titulo}</h2>
+        </div>
+        <div class="muted2 small">💾 Salve cargas no botão “Registrar cargas”</div>
+      </div>
+    </div>
+  `;
+
+  info.itens.forEach((it, idx)=>{
+    const saved = data.cargas[cargaKey(diaAtivo, it.nome)];
+    const savedTxt = saved ? `✅ ${saved}` : "Sem registro ainda";
+    listEl.innerHTML += `
+      <div class="ex">
+        <div class="exTop">
+          <div>
+            <div class="exName">${idx+1}. ${it.nome}</div>
+            <div class="exMeta">${it.sets} • 👉 ${it.alvo}</div>
+            <div class="exTip">💡 ${it.tip}</div>
+          </div>
+          <div class="col" style="align-items:flex-end">
+            <a class="video" href="${videoLink(it.q)}" target="_blank" rel="noopener">▶️ Ver vídeo (PT)</a>
+            <div class="muted2 small" style="margin-top:8px">${savedTxt}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+}
+
+/* ------------------ Modal cargas ------------------ */
+function openCargaModal(){
+  const modal = document.getElementById("modal");
+  modal.style.display="block";
+  // fill selects
+  const cDia = document.getElementById("cDia");
+  cDia.innerHTML = dias.map(d=>`<option value="${d}">${d}</option>`).join("");
+  cDia.value = diaAtivo;
+
+  fillExSelect();
+  loadCargaPreview();
+}
+function closeModal(){ document.getElementById("modal").style.display="none"; }
+function fillExSelect(){
+  const d = document.getElementById("cDia").value;
+  const cEx = document.getElementById("cEx");
+  cEx.innerHTML = treino[d].itens.map(it=>`<option value="${it.nome}">${it.nome}</option>`).join("");
+  cEx.value = treino[d].itens[0].nome;
+}
+document.getElementById("cDia").addEventListener("change", ()=>{ fillExSelect(); loadCargaPreview(); });
+document.getElementById("cEx").addEventListener("change", loadCargaPreview);
+
+function loadCargaPreview(){
+  const d = document.getElementById("cDia").value;
+  const ex = document.getElementById("cEx").value;
+  const key = cargaKey(d, ex);
+  const v = data.cargas[key] || "";
+  document.getElementById("cCarga").value = v;
+  document.getElementById("cStatus").innerHTML = v ? `Salvo: <b>${v}</b>` : "Sem registro salvo.";
+}
+function salvarCarga(){
+  const d = document.getElementById("cDia").value;
+  const ex = document.getElementById("cEx").value;
+  const val = (document.getElementById("cCarga").value || "").trim();
+  const key = cargaKey(d, ex);
+  if(!val){ alert("Digite uma carga/observação."); return; }
+  data.cargas[key] = val;
+  save();
+  document.getElementById("cStatus").innerHTML = `Salvo: <b>${val}</b>`;
+  // update treino view if same day
+  renderTreino();
+}
+function apagarCarga(){
+  const d = document.getElementById("cDia").value;
+  const ex = document.getElementById("cEx").value;
+  const key = cargaKey(d, ex);
+  delete data.cargas[key];
+  save();
+  document.getElementById("cCarga").value="";
+  document.getElementById("cStatus").innerHTML = "Registro apagado.";
+  renderTreino();
+}
+
+/* ------------------ Dashboard ------------------ */
+function renderDashboard(){
+  // agua
+  ensureAguaDay();
+  const aguaTotal = Number(data.agua[hoje()].total||0);
+  document.getElementById("aguaHoje").textContent = aguaTotal;
+
+  const aguaMeta = Number(document.getElementById("aguaMeta").value || 2500);
+  document.getElementById("aguaMetaLabel").textContent = aguaMeta;
+
+  // prot
+  ensureProtDay();
+  const protTotal = Math.round(Number(data.prot[hoje()].total||0));
+  document.getElementById("protHoje").textContent = protTotal;
+
+  const protMeta = Number(document.getElementById("protMeta").value || 100);
+  document.getElementById("protMetaLabel").textContent = protMeta;
+
+  // intestino
+  const rec = data.intestino[hoje()];
+  document.getElementById("intHoje").textContent = rec ? (rec.foi==="sim" ? "✅ Sim" : (rec.foi==="pouco" ? "➖ Pouco" : "❌ Não")) : "—";
+  document.getElementById("chiaHoje").textContent = "Chia: " + (rec ? (rec.chia ? "✅" : "—") : "—");
+
+  // ampulheta
+  const m = (data.medidas||[]);
+  if(m.length){
+    const last = m[m.length-1];
+    const ratio = last.gluteo / last.cintura;
+    document.getElementById("ampVal").textContent = fmt(ratio,2);
+    document.getElementById("ampNota").textContent = ampNota(ratio);
+  }else{
+    document.getElementById("ampVal").textContent = "—";
+    document.getElementById("ampNota").textContent = "adicione medidas";
+  }
+}
+
+/* ------------------ Export ------------------ */
+function exportar(){
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "miria-sculpt-backup.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+/* ------------------ Init ------------------ */
+function init(){
+  // keep meta labels synced
+  document.getElementById("aguaMeta").addEventListener("input", ()=>{ save(); renderAgua(); renderDashboard(); });
+  document.getElementById("protMeta").addEventListener("input", ()=>{ save(); renderProt(); renderDashboard(); });
+
+  updateProtQtdLabel();
+  renderWeekPills();
+  renderTreino();
+  renderAgua();
+  renderProt();
+  renderIntestino();
+  renderMedidas();
+  renderFotos();
+  renderDashboard();
+
+  // PWA
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("./sw.js").catch(()=>{});
+  }
+}
+init();
+</script>
+</body>
+</html>
