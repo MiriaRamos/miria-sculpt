@@ -4,498 +4,330 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Miriã Sculpt™</title>
-
-  <!-- PWA -->
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#12060b">
+  <meta name="theme-color" content="#2a0b14">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="icon" sizes="32x32" href="favicon-32.png">
-
   <style>
     :root{
-      --bg:#0b0608;
-      --panel: rgba(255,255,255,.07);
-      --panel2: rgba(255,255,255,.09);
-      --stroke: rgba(255,255,255,.12);
-      --text: rgba(255,255,255,.92);
-      --muted: rgba(255,255,255,.68);
-      --muted2: rgba(255,255,255,.55);
-
-      --pink:#ff2f86;
-      --pink2:#ff4d9b;
-      --gold:#e9c27d;
-
+      --bg:#16070d;
+      --bg2:#220a12;
+      --card:rgba(53,16,28,.68);
+      --card-2:rgba(73,23,38,.72);
+      --stroke:rgba(255,206,180,.18);
+      --stroke-2:rgba(255,174,149,.32);
+      --text:#fff2ef;
+      --muted:rgba(255,234,227,.78);
+      --muted2:rgba(255,228,220,.58);
+      --rose:#f49ca8;
+      --rose-2:#ff7fa6;
+      --rose-3:#e8b0a1;
+      --gold:#f0c8a2;
+      --green:#6fed93;
+      --green-bg:rgba(54,214,109,.16);
+      --red:#ff7b7b;
+      --red-bg:rgba(255,84,84,.14);
+      --shadow:0 22px 56px rgba(0,0,0,.46);
       --r:22px;
-      --shadow: 0 18px 45px rgba(0,0,0,.45);
+      --tabh:86px;
     }
-
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color:var(--text);
-      background: #000;
-      -webkit-font-smoothing: antialiased;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background: radial-gradient(circle at top, #4a1322 0%, #220912 42%, #0f0408 100%);
       overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
     }
-
-    /* Background image like the reference */
     .bg{
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0; z-index:-2;
       background:
-        radial-gradient(1200px 700px at 25% 20%, rgba(255,60,150,.25), transparent 55%),
-        radial-gradient(900px 600px at 80% 75%, rgba(233,194,125,.16), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.78)),
-        url("assets/bg.jpg");
-      background-size: cover;
-      background-position: center;
-      filter: saturate(1.05) contrast(1.04);
-      transform: scale(1.02);
+        radial-gradient(1100px 650px at 50% 0%, rgba(255,132,171,.24), transparent 60%),
+        radial-gradient(900px 560px at 85% 20%, rgba(255,209,162,.16), transparent 58%),
+        radial-gradient(1000px 900px at 50% 120%, rgba(255,137,165,.12), transparent 46%),
+        linear-gradient(180deg, rgba(8,0,4,.26), rgba(0,0,0,.48));
     }
-    .bg:after{
-      content:"";
-      position:absolute; inset:0;
-      backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.10);
+    .bg::before{
+      content:""; position:absolute; inset:0;
+      background: url("icon-512.png") center 110px/70vmin auto no-repeat;
+      opacity:.10; filter: drop-shadow(0 0 30px rgba(255,192,170,.35));
+      transform: scale(1.04);
+      pointer-events:none;
     }
-
-    .wrap{
-      position:relative;
-      min-height:100%;
-      padding: 18px 16px 96px; /* bottom space for tabs */
-      max-width: 560px;
-      margin: 0 auto;
+    .bg::after{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0) 18%),
+        radial-gradient(circle at 50% 18%, rgba(255,210,181,.18), transparent 18%),
+        radial-gradient(circle at 18% 10%, rgba(255,145,176,.12), transparent 12%),
+        radial-gradient(circle at 78% 8%, rgba(255,145,176,.10), transparent 10%);
+      mix-blend-mode:screen;
+      pointer-events:none;
     }
-
+    .wrap{max-width:560px; margin:0 auto; padding:18px 16px calc(var(--tabh) + 26px); position:relative}
+    .section{display:none}
+    .section.active{display:block}
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
-      border: 1px solid var(--stroke);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      padding: 14px;
-      margin: 14px 0;
-    }
-    .row{ display:flex; gap:12px; align-items:center; }
-    .space{ justify-content:space-between; }
-    .col{ display:flex; flex-direction:column; gap:8px; }
-    .muted{ color:var(--muted); }
-    .muted2{ color:var(--muted2); }
-    h1,h2,h3{ margin:0; }
-    h2{ font-size:18px; letter-spacing:.2px;}
-    h3{ font-size:15px; letter-spacing:.2px;}
-    .small{ font-size:12px; }
-
-    /* Top hero */
-    .hero{
+      background:linear-gradient(180deg, rgba(92,30,48,.65), rgba(36,9,17,.82));
+      border:1px solid var(--stroke);
+      border-radius:var(--r);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.05);
+      padding:14px;
+      margin:14px 0;
       position:relative;
       overflow:hidden;
-      padding: 16px;
     }
-    .hero .left{
-      display:flex; gap:12px; align-items:center;
+    .card::before{
+      content:""; position:absolute; left:0; right:0; top:0; height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,214,183,.72), transparent);
+      opacity:.55;
     }
-    .appIcon{
-      width:56px; height:56px; border-radius:16px;
-      border: 1px solid rgba(255,255,255,.18);
-      box-shadow: 0 12px 35px rgba(0,0,0,.55);
-      overflow:hidden;
-      background: #14070c;
-      flex:0 0 auto;
+    .row{display:flex; gap:12px; align-items:center}
+    .space{justify-content:space-between}
+    .col{display:flex; flex-direction:column; gap:8px}
+    h1,h2,h3{margin:0; font-weight:700}
+    h1{font-size:31px; letter-spacing:.4px; color:#ffe8de}
+    h2{font-size:19px; color:#ffe3d5}
+    h3{font-size:15px; color:#ffe5da}
+    .sub{color:var(--muted); font-size:13px}
+    .small{font-size:12px}
+    .muted{color:var(--muted)}
+    .muted2{color:var(--muted2)}
+    .brand{font-family: Georgia, "Times New Roman", serif; letter-spacing:.2px}
+    .hero{
+      min-height:265px;
+      padding:18px;
+      background:
+        linear-gradient(180deg, rgba(79,20,34,.45), rgba(21,4,10,.68)),
+        radial-gradient(circle at 50% 10%, rgba(255,168,196,.15), transparent 22%);
     }
-    .appIcon img{ width:100%; height:100%; object-fit:cover; }
-
-    .title{
-      font-size:24px;
-      font-weight:800;
-      line-height:1.05;
+    .heroGlow{position:absolute; inset:0; background:url("icon-512.png") center 38px/78% auto no-repeat; opacity:.16; pointer-events:none; filter:drop-shadow(0 0 34px rgba(255,211,185,.28));}
+    .heroTop{position:relative; z-index:1}
+    .avatarIco{width:30px; height:30px; border-radius:50%; display:grid; place-items:center; background:rgba(255,255,255,.06); border:1px solid var(--stroke); color:var(--gold)}
+    .heroTitle{margin-top:96px; text-align:center}
+    .heroTitle .brand{font-size:24px; color:#ffd7c1}
+    .slogan{margin-top:6px; text-align:center; color:#f7d4cd; font-style:italic}
+    .dayStrip{margin-top:18px; display:grid; grid-template-columns: repeat(5, 1fr); gap:8px}
+    .dayBtn, .chip, button, .btn, select, input, textarea{
+      font:inherit;
     }
-    .slogan{
-      margin-top:4px;
-      font-size:14px;
-      color: rgba(255,255,255,.75);
-    }
-    .desc{
-      margin-top:8px;
-      font-size:13px;
-      color: rgba(255,255,255,.68);
-    }
-
-    .badge{
-      width:100px; height:100px;
-      border-radius:999px;
-      background: radial-gradient(circle at 30% 25%, rgba(255,70,160,.35), rgba(0,0,0,.12)),
-                  linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.14);
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      padding:12px;
-      color: rgba(255,255,255,.86);
-      font-weight:700;
-      box-shadow: 0 20px 55px rgba(0,0,0,.45);
-      flex:0 0 auto;
-    }
-
-    /* Buttons */
-    button, .btn{
-      border:0;
+    .dayBtn{
+      border:1px solid var(--stroke);
+      border-radius:12px; text-align:center; padding:9px 4px; font-weight:800;
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+      color:#f7d7cf;
       cursor:pointer;
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
-      transition: transform .08s ease, background .2s ease;
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-      font-weight:700;
     }
-    button:active, .btn:active{ transform: scale(.98); }
-    .btnPink{
-      background: linear-gradient(180deg, rgba(255,47,134,.95), rgba(255,47,134,.70));
-      border:1px solid rgba(255,255,255,.15);
-      color:#fff;
-    }
-    .btnGhost{
-      background: rgba(255,255,255,.05);
-    }
-    .btnMini{ padding:8px 12px; font-size:12px; font-weight:800; }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, rgba(255,47,134,.92), rgba(255,47,134,.60));
-      border: 1px solid rgba(255,255,255,.12);
-      color:#fff;
-      font-weight:900;
-      box-shadow: 0 12px 30px rgba(255,47,134,.18);
-    }
-
-    /* Shortcuts area */
-    .shortcutsGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    .dayBtn.active{background:linear-gradient(180deg, rgba(255,120,166,.54), rgba(110,22,49,.68)); box-shadow:0 10px 24px rgba(255,129,170,.2);}
+    .quickStats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:16px}
+    .miniStat{padding:12px; min-height:88px; border-radius:18px; background:linear-gradient(180deg, rgba(45,11,22,.66), rgba(24,6,12,.82)); border:1px solid var(--stroke)}
+    .miniStat .k{font-size:12px; color:#f4cab7; margin-bottom:8px}
+    .miniStat .v{font-size:25px; font-weight:900}
+    .progressLine{height:10px; border-radius:999px; overflow:hidden; border:1px solid var(--stroke); background:rgba(255,255,255,.06); margin-top:8px}
+    .bar{height:100%; width:0%; background:linear-gradient(90deg, #8ee89f, #ffcf9a)}
+    .shortcutGrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
     .shortcut{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      border-radius: 999px;
-      padding: 12px 14px;
-      background: linear-gradient(180deg, rgba(255,47,134,.92), rgba(255,47,134,.62));
-      border: 1px solid rgba(255,255,255,.12);
-      font-weight:900;
-      box-shadow: 0 12px 30px rgba(255,47,134,.16);
+      padding:12px 14px; border-radius:18px; border:1px solid var(--stroke);
+      background:linear-gradient(180deg, rgba(89,22,40,.65), rgba(32,8,15,.82));
+      color:var(--text); font-weight:800; display:flex; align-items:center; justify-content:space-between;
+      cursor:pointer;
     }
-    .shortcut.dark{
-      background: rgba(255,255,255,.06);
-      box-shadow: none;
-      color: rgba(255,255,255,.90);
+    .tabs{position:fixed; left:0; right:0; bottom:0; padding:10px 10px calc(env(safe-area-inset-bottom) + 10px); background:linear-gradient(180deg, rgba(0,0,0,0), rgba(7,0,2,.65) 28%, rgba(10,2,5,.94)); backdrop-filter: blur(16px); z-index:50}
+    .tabsInner{max-width:560px; margin:0 auto; display:grid; grid-template-columns:repeat(5,1fr); gap:10px}
+    .tab{min-height:64px; border-radius:18px; border:1px solid rgba(255,211,186,.12); background:rgba(255,255,255,.04); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; color:#f5d4c8; cursor:pointer; font-weight:900}
+    .tab.active{background:linear-gradient(180deg, rgba(255,130,176,.40), rgba(77,17,33,.72)); box-shadow:0 10px 28px rgba(255,123,164,.2)}
+    .tab .ico{font-size:18px}
+    .tab .lbl{font-size:12px}
+    button, .btn{
+      border:1px solid var(--stroke-2); color:#fff4f1;
+      background:linear-gradient(180deg, rgba(121,35,57,.88), rgba(70,17,32,.86));
+      padding:10px 14px; border-radius:14px; cursor:pointer; font-weight:800;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
     }
-
-    /* Section switcher (tabs) */
-    .section{ display:none; }
-    .section.active{ display:block; }
-
-    /* Bottom tabs */
-    .tabs{
-      position:fixed;
-      left:0; right:0; bottom:0;
-      padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
-      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.65) 25%, rgba(0,0,0,.86));
-      backdrop-filter: blur(12px);
-      z-index: 50;
-    }
-    .tabsInner{
-      max-width:560px;
-      margin: 0 auto;
-      display:flex;
-      gap:10px;
-    }
-    .tab{
-      flex:1;
-      border-radius: 18px;
-      padding: 10px 6px;
-      text-align:center;
-      border: 1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.80);
-      font-weight:900;
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      align-items:center;
-      justify-content:center;
-      min-height:58px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .tab.active{
-      background: radial-gradient(circle at 30% 20%, rgba(255,47,134,.35), rgba(255,255,255,.06));
-      border-color: rgba(255,255,255,.16);
-      color:#fff;
-      box-shadow: 0 14px 36px rgba(0,0,0,.35);
-    }
-    .tab .ico{ font-size:18px; line-height:1; }
-    .tab .lbl{ font-size:12px; }
-
-    /* Forms */
-    label{ display:block; font-size:12px; color: rgba(255,255,255,.72); margin: 8px 0 6px; font-weight:800; }
+    .btnGhost{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-color:var(--stroke)}
+    .btnMini{padding:8px 10px; font-size:12px; border-radius:12px}
+    .btnRow{display:flex; gap:10px; flex-wrap:wrap}
+    label{display:block; margin:10px 0 6px; font-size:12px; color:#f4d2c3; font-weight:800}
     input, select, textarea{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(0,0,0,.20);
-      color: var(--text);
+      width:100%; border-radius:16px; padding:12px 12px; color:var(--text);
+      border:1px solid var(--stroke); background:rgba(15,2,7,.34);
+      box-shadow: inset 0 0 0 999px rgba(255,255,255,.01);
       outline:none;
-      box-shadow: inset 0 0 0 999px rgba(255,255,255,.03);
     }
-    textarea{ min-height:90px; resize:vertical; }
-
-    .progress{
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-      margin-top:10px;
+    textarea{min-height:90px; resize:vertical}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .exerciseCard{
+      border:1px solid var(--stroke); border-radius:18px; padding:12px; margin-top:10px;
+      background:linear-gradient(180deg, rgba(63,15,28,.70), rgba(28,7,13,.88));
+      transition:.16s ease;
     }
-    .bar{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(255,47,134,.95), rgba(233,194,125,.95));
-      transition: width .25s ease;
-    }
-
-    /* Weekday pills */
-    .weekPills{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .weekPills .day{
-      padding: 8px 12px;
-      font-size:12px;
-      font-weight:900;
-      border-radius: 12px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      color: rgba(255,255,255,.86);
-    }
-    .weekPills .day.active{
-      background: radial-gradient(circle at 30% 20%, rgba(255,47,134,.35), rgba(255,255,255,.06));
-      border-color: rgba(255,255,255,.16);
-      color:#fff;
-    }
-
-    /* Exercise list */
-    .ex{
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
-      padding: 12px;
-      margin-top:10px;
-    }
-    .exTop{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; }
-    .exName{ font-weight:900; }
-    .exMeta{ color: rgba(255,255,255,.70); font-size:12px; margin-top:4px; }
-    .exTip{ color: rgba(255,255,255,.66); font-size:12px; margin-top:8px; }
-    .exActions{ display:flex; gap:8px; align-items:center; }
-    a.video{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      text-decoration:none;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight:900;
-      color:#fff;
-      background: rgba(233,194,125,.18);
-      border: 1px solid rgba(233,194,125,.26);
-      white-space:nowrap;
-    }
-
-    /* Data rows */
-    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .stat{
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
-      padding: 12px;
-      min-height: 86px;
-    }
-    .stat .k{ font-size:12px; color: rgba(255,255,255,.68); font-weight:800; }
-    .stat .v{ font-size:20px; font-weight:1000; margin-top:6px; }
-    .stat .s{ font-size:12px; color: rgba(255,255,255,.62); margin-top:2px; }
-
-    .divider{ height:1px; background: rgba(255,255,255,.10); margin: 12px 0; }
-
-    /* Small alert */
-    .note{
-      padding: 10px 12px;
-      border-radius: 16px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.04);
-      color: rgba(255,255,255,.70);
-      font-size:12px;
-      line-height:1.35;
+    .exerciseCard.done{border-color:rgba(132,244,165,.46); background:linear-gradient(180deg, rgba(34,75,42,.58), rgba(18,40,21,.82)); box-shadow: inset 0 0 0 1px rgba(173,255,198,.08)}
+    .exerciseCard.notdone{border-color:rgba(255,112,112,.32); background:linear-gradient(180deg, rgba(78,18,23,.62), rgba(33,9,12,.9))}
+    .exerciseCard .top{display:flex; gap:10px; align-items:flex-start; justify-content:space-between}
+    .exerciseName{font-size:18px; font-weight:900}
+    .exerciseMeta{margin-top:4px; color:#f4d8d0; font-size:13px}
+    .exerciseTip{margin-top:8px; color:#eac3ba; font-size:12px}
+    .statusDot{display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:900; border-radius:999px; padding:6px 10px; border:1px solid var(--stroke)}
+    .statusDot.done{color:#dfffe5; background:var(--green-bg); border-color:rgba(132,244,165,.3)}
+    .statusDot.notdone{color:#ffd8d8; background:var(--red-bg); border-color:rgba(255,118,118,.25)}
+    .statusDot.todo{background:rgba(255,255,255,.05)}
+    .exerciseActions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .videoLink, .swapBtn{display:inline-flex; align-items:center; gap:7px; text-decoration:none; padding:9px 12px; border-radius:12px; border:1px solid var(--stroke); color:#fff6f4; font-weight:800; background:linear-gradient(180deg, rgba(110,30,50,.88), rgba(56,12,24,.88))}
+    .toggleBtn{flex:1}
+    .summaryCard{display:grid; grid-template-columns:1.5fr .9fr; gap:12px; align-items:end}
+    .ring{width:88px; height:88px; border-radius:50%; border:4px solid rgba(255,221,205,.18); display:grid; place-items:center; font-size:20px; font-weight:900; box-shadow: inset 0 0 0 4px rgba(255,164,124,.08)}
+    .statBlock{padding:12px; border-radius:18px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(69,16,32,.64), rgba(27,8,14,.86))}
+    .historyItem{padding:12px; border-radius:18px; border:1px solid var(--stroke); background:linear-gradient(180deg, rgba(56,15,27,.64), rgba(24,6,12,.88)); margin-top:10px}
+    .pillRow{display:flex; gap:8px; flex-wrap:wrap}
+    .pill{padding:8px 12px; border-radius:12px; border:1px solid var(--stroke); background:rgba(255,255,255,.04); font-weight:800; cursor:pointer}
+    .pill.active{background:linear-gradient(180deg, rgba(255,124,166,.42), rgba(85,17,34,.72))}
+    .note{padding:10px 12px; border-radius:16px; border:1px solid var(--stroke); background:rgba(255,255,255,.03); color:#f0d3ca; font-size:12px; line-height:1.35}
+    .hidden{display:none !important}
+    .modal{display:none; position:fixed; inset:0; z-index:80}
+    .modal.open{display:block}
+    .backdrop{position:absolute; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px)}
+    .modalPanel{position:relative; max-width:560px; margin:0 auto; padding:14px 16px calc(var(--tabh) + 10px)}
+    .optionList{max-height:58vh; overflow:auto; padding-right:2px}
+    .optionItem{padding:11px 12px; border-radius:14px; margin-top:8px; border:1px solid var(--stroke); background:rgba(255,255,255,.03); display:flex; justify-content:space-between; gap:10px; align-items:center}
+    .fieldGrid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:10px}
+    .seriesRow{display:grid; grid-template-columns:.8fr 1fr 1fr 1fr 1fr auto; gap:8px; align-items:center; margin-top:8px}
+    .seriesRow input{padding:9px 10px; border-radius:12px; font-size:12px}
+    .line{height:1px; background:linear-gradient(90deg, transparent, rgba(255,211,186,.48), transparent); margin:12px 0}
+    .footerHint{font-size:11px; color:var(--muted2); text-align:center; margin-top:12px}
+    @media (max-width:420px){
+      .quickStats{grid-template-columns:1fr}
+      .grid2{grid-template-columns:1fr}
+      .summaryCard{grid-template-columns:1fr}
+      .seriesRow{grid-template-columns:1fr 1fr 1fr 1fr 1fr auto}
     }
   </style>
 </head>
-
 <body>
   <div class="bg" aria-hidden="true"></div>
-
   <div class="wrap">
 
-    <!-- INÍCIO -->
     <section id="sec-inicio" class="section active">
-
       <div class="card hero">
-        <div class="row space">
-          <div class="left">
-            <div class="appIcon" title="Miriã Sculpt™">
-              <img src="icon-192.png" alt="Ícone Miriã Sculpt">
-            </div>
+        <div class="heroGlow"></div>
+        <div class="heroTop">
+          <div class="row space">
             <div>
-              <div class="title">Miriã Sculpt™</div>
-              <div class="slogan">Esculpindo curvas com estratégia.</div>
-              <div class="desc">Treino + cargas + água + proteína + intestino + medidas + fotos (salva no seu celular)</div>
+              <div class="muted">Olá, <span id="helloName">Miriã</span></div>
+            </div>
+            <div class="row">
+              <div class="avatarIco">🔔</div>
+              <div class="avatarIco" onclick="go('perfil')" style="cursor:pointer">👤</div>
             </div>
           </div>
-          <div class="badge">Atalhos<br><span class="muted2" style="font-weight:800">um toque e pronto</span> ✨</div>
+          <div class="heroTitle">
+            <div class="brand">Miriã Sculpt™</div>
+            <div class="slogan">Esculpindo curvas com estratégia.</div>
+          </div>
+          <div class="dayStrip" id="homeDayStrip"></div>
+        </div>
+      </div>
+
+      <div class="card summaryCard">
+        <div>
+          <div class="muted small" id="todayWorkoutTitle">SEG • Glúteos / Posterior</div>
+          <h2 style="margin-top:4px">Treino de hoje</h2>
+          <div class="progressLine"><div class="bar" id="todayProgressBar"></div></div>
+          <div class="row space" style="margin-top:10px">
+            <div><b id="todayProgressText">0/0</b> <span class="muted2 small">exercícios concluídos</span></div>
+            <div class="ring"><span id="todayPct">0%</span></div>
+          </div>
+        </div>
+        <div class="col">
+          <button onclick="go('treino')">Abrir treino</button>
+          <button class="btnGhost" onclick="go('historico')">Ver histórico</button>
+        </div>
+      </div>
+
+      <div class="quickStats">
+        <div class="miniStat">
+          <div class="k">💧 Água</div>
+          <div class="v"><span id="aguaHojeHome">0</span><span class="small"> ml</span></div>
+          <div class="sub">Meta <span id="aguaMetaHome">2500</span> ml</div>
+        </div>
+        <div class="miniStat">
+          <div class="k">🥩 Proteína</div>
+          <div class="v"><span id="protHojeHome">0</span><span class="small"> g</span></div>
+          <div class="sub">Meta <span id="protMetaHome">100</span> g</div>
+        </div>
+        <div class="miniStat">
+          <div class="k">📏 Ampulheta</div>
+          <div class="v" id="ampHome">—</div>
+          <div class="sub" id="ampHomeTxt">adicione medidas</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="row space">
-          <div>
-            <h2>⚡ Atalhos</h2>
-            <div class="muted">Clique e vá direto pro que você quer</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="scrollTopSmooth()">⬆️ topo</button>
-        </div>
-
-        <div class="shortcutsGrid">
-          <div class="shortcut" onclick="go('agua')">💧 Água</div>
-          <div class="shortcut" onclick="go('proteina')">🥩 Proteína</div>
-          <div class="shortcut" onclick="go('intestino')">🚽 Intestino</div>
-          <div class="shortcut" onclick="go('medidas')">📏 Medidas</div>
-          <div class="shortcut dark" onclick="go('treino')">🏋️ Treino</div>
-          <div class="shortcut dark" onclick="go('fotos')">📸 Fotos</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="note">
-          🎯 <b>Foco Ampulheta (B):</b> costas + postura + core (vácuo) + glúteo (hip thrust) = cintura mais marcada <b>sem exageros</b>.<br>
-          📸 <b>Fotos e medidas:</b> recomendado a cada <b>15 dias</b> (mesma luz/posição).
+        <div class="row space"><h2>Atalhos</h2><button class="btnMini btnGhost" onclick="scrollTopSmooth()">⬆ topo</button></div>
+        <div class="shortcutGrid">
+          <div class="shortcut" onclick="go('agua')"><span>💧 Água</span><span>›</span></div>
+          <div class="shortcut" onclick="go('proteina')"><span>🥩 Proteínas</span><span>›</span></div>
+          <div class="shortcut" onclick="go('intestino')"><span>🚽 Intestino</span><span>›</span></div>
+          <div class="shortcut" onclick="go('medidas')"><span>📏 Medidas</span><span>›</span></div>
+          <div class="shortcut" onclick="go('fotos')"><span>📸 Fotos</span><span>›</span></div>
+          <div class="shortcut" onclick="go('perfil')"><span>👤 Perfil</span><span>›</span></div>
         </div>
       </div>
-
-      <div class="card">
-        <h2>📊 Painel do dia</h2>
-        <div class="grid2" style="margin-top:10px">
-          <div class="stat">
-            <div class="k">💧 Água hoje</div>
-            <div class="v"><span id="aguaHoje">0</span> <span class="small">ml</span></div>
-            <div class="s">Meta: <span id="aguaMetaLabel">2500</span> ml</div>
-          </div>
-          <div class="stat">
-            <div class="k">🥩 Proteína hoje</div>
-            <div class="v"><span id="protHoje">0</span> <span class="small">g</span></div>
-            <div class="s">Meta: <span id="protMetaLabel">100</span> g</div>
-          </div>
-          <div class="stat">
-            <div class="k">🚽 Intestino</div>
-            <div class="v" id="intHoje">—</div>
-            <div class="s" id="chiaHoje">Chia: —</div>
-          </div>
-          <div class="stat">
-            <div class="k">🍑 Proporção ampulheta</div>
-            <div class="v" id="ampVal">—</div>
-            <div class="s" id="ampNota">adicione medidas</div>
-          </div>
-        </div>
-      </div>
-
     </section>
 
-    <!-- TREINO -->
     <section id="sec-treino" class="section">
       <div class="card">
         <div class="row space">
           <div>
-            <h2>📅 Treino SEG–SEX (Ampulheta)</h2>
-            <div class="muted">Clique no dia e veja a lista. Você pode salvar carga/reps.</div>
+            <h2>Treino semanal</h2>
+            <div class="sub">Clique para marcar feito ou não feito. Verde = feito • vermelho = não feito.</div>
           </div>
-          <button class="btnGhost btnMini" onclick="openCargaModal()">📝 Registrar cargas</button>
+          <button class="btnMini btnGhost" onclick="go('historico')">Histórico</button>
         </div>
-
-        <div class="weekPills" id="weekPills"></div>
-
-        <div class="note" style="margin-top:10px">
-          ⏱️ <b>Descanso:</b> principais 1m–1m30 • acessórios 45s–1m<br>
-          🍑 <b>Regra:</b> se completou reps com folga → sobe peso na próxima.
+        <div class="dayStrip" id="weekPills"></div>
+        <div class="line"></div>
+        <div class="row space">
+          <div>
+            <div class="muted small" id="treinoDiaNome">Segunda</div>
+            <h2 id="treinoTitulo">Glúteos / Posterior</h2>
+          </div>
+          <div class="statusDot todo" id="treinoResumoChip">0/0</div>
         </div>
-
         <div id="treinoLista"></div>
+        <div class="btnRow" style="margin-top:12px">
+          <button onclick="finalizarTreinoDia()">Finalizar treino</button>
+          <button class="btnGhost" onclick="resetTreinoHoje()">Limpar marcações de hoje</button>
+        </div>
       </div>
     </section>
 
-    <!-- ÁGUA -->
     <section id="sec-agua" class="section">
       <div class="card">
         <div class="row space">
-          <div>
-            <h2>💧 Controle de água</h2>
-            <div class="muted">Rápido, simples e com média de 7 dias.</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="zerarAgua()">🧹 Zerar hoje</button>
+          <div><h2>Água</h2><div class="sub">Mesma função, visual novo.</div></div>
+          <button class="btnMini btnGhost" onclick="zerarAgua()">Zerar hoje</button>
         </div>
-
-        <label>🎯 Meta diária (ml)</label>
+        <label>Meta diária (ml)</label>
         <input type="number" id="aguaMeta" value="2500">
-
-        <label>➕ Adicionar manualmente (ml)</label>
+        <label>Adicionar manualmente (ml)</label>
         <input type="number" id="aguaManual" placeholder="Ex: 300">
-
-        <div class="row" style="margin-top:10px; flex-wrap:wrap">
-          <button class="btnPink" onclick="addAguaManual()">➕ Somar</button>
-          <button onclick="addAgua(470)">+470 ml</button>
-          <button onclick="addAgua(250)">+250 ml</button>
-          <button class="btnGhost" onclick="desfazerAgua()">↩️ Desfazer</button>
+        <div class="btnRow" style="margin-top:10px">
+          <button onclick="addAguaManual()">Somar</button>
+          <button class="btnGhost" onclick="addAgua(470)">+470 ml</button>
+          <button class="btnGhost" onclick="addAgua(250)">+250 ml</button>
+          <button class="btnGhost" onclick="desfazerAgua()">Desfazer</button>
         </div>
-
-        <div class="progress"><div class="bar" id="aguaBar"></div></div>
-        <div class="row space" style="margin-top:10px">
-          <div class="muted">Hoje: <b id="aguaStatus">0 ml</b></div>
-          <div class="muted2 small">📊 Média 7 dias: <b id="aguaMedia">0 ml</b></div>
-        </div>
-
+        <div class="progressLine"><div class="bar" id="aguaBar"></div></div>
+        <div class="row space" style="margin-top:10px"><div>Hoje: <b id="aguaStatus">0 ml</b></div><div class="muted2 small">Média 7 dias: <b id="aguaMedia">0 ml</b></div></div>
       </div>
     </section>
 
-    <!-- PROTEÍNA -->
     <section id="sec-proteina" class="section">
       <div class="card">
-        <div class="row space">
-          <div>
-            <h2>🥩 Proteína (automática)</h2>
-            <div class="muted">Escolha o alimento + quantidade e o app soma sozinho.</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="zerarProt()">🧹 Zerar hoje</button>
-        </div>
-
-        <label>🎯 Meta de proteína (g/dia)</label>
+        <div class="row space"><div><h2>Proteínas</h2><div class="sub">Cálculo automático mantido.</div></div><button class="btnMini btnGhost" onclick="zerarProt()">Zerar hoje</button></div>
+        <label>Meta de proteína (g/dia)</label>
         <input type="number" id="protMeta" value="100">
-
-        <div class="divider"></div>
-
-        <h3>🍽 Adicionar item</h3>
-
         <label>Alimento</label>
         <select id="protItem">
           <option value="frango">🍗 Frango (31g / 100g)</option>
@@ -505,699 +337,603 @@
           <option value="queijo">🧀 Queijo (25g / 100g)</option>
           <option value="whey">🥤 Whey (20g / scoop)</option>
         </select>
-
         <label id="protQtdLabel">Quantidade</label>
         <input type="number" id="protQtd" placeholder="Ex: 150">
-
-        <div class="row" style="margin-top:10px; flex-wrap:wrap">
-          <button class="btnPink" onclick="addProtItem()">➕ Adicionar</button>
-          <button class="btnGhost" onclick="desfazerProt()">↩️ Desfazer</button>
-        </div>
-
-        <div class="progress"><div class="bar" id="protBar"></div></div>
-
-        <div class="row space" style="margin-top:10px">
-          <div>
-            <div class="muted">Hoje: <b><span id="protStatus">0</span> g</b></div>
-            <div class="muted2 small">Faltam: <b><span id="protFaltam">0</span> g</b></div>
-          </div>
-          <div class="muted2 small">📊 Média 7 dias: <b><span id="protMedia">0</span> g</b></div>
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>📋 Itens de hoje</h3>
-        <div id="protLista" class="small muted2"></div>
-
+        <div class="btnRow" style="margin-top:10px"><button onclick="addProtItem()">Adicionar</button><button class="btnGhost" onclick="desfazerProt()">Desfazer</button></div>
+        <div class="progressLine"><div class="bar" id="protBar"></div></div>
+        <div class="row space" style="margin-top:10px"><div>Hoje: <b><span id="protStatus">0</span> g</b></div><div class="muted2 small">Faltam: <b><span id="protFaltam">0</span> g</b> • Média 7 dias: <b><span id="protMedia">0</span> g</b></div></div>
+        <div class="line"></div>
+        <h3>Itens de hoje</h3>
+        <div id="protLista" class="muted2 small"></div>
       </div>
     </section>
 
-    <!-- INTESTINO -->
     <section id="sec-intestino" class="section">
       <div class="card">
-        <div class="row space">
-          <div>
-            <h2>🚽 Controle intestinal</h2>
-            <div class="muted">Marque e acompanhe os últimos dias.</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="limparIntestino()">🧹 Limpar</button>
-        </div>
-
+        <div class="row space"><div><h2>Intestino</h2><div class="sub">Mesma lógica, acabamento novo.</div></div><button class="btnMini btnGhost" onclick="limparIntestino()">Limpar</button></div>
         <label>Fui ao banheiro hoje?</label>
         <select id="intSel">
           <option value="nao">Não</option>
           <option value="sim">Sim</option>
           <option value="pouco">Pouquinho</option>
         </select>
-
-        <label style="margin-top:10px">
-          <input type="checkbox" id="chiaCheck" style="width:auto; margin-right:8px"> Tomei água morna + chia
-        </label>
-
-        <div class="row" style="margin-top:10px">
-          <button class="btnPink" onclick="salvarIntestino()">Salvar</button>
-        </div>
-
-        <div class="divider"></div>
-        <div class="small muted2" id="intHist"></div>
+        <label><input type="checkbox" id="chiaCheck" style="width:auto; margin-right:8px"> Tomei água morna + chia</label>
+        <div class="btnRow" style="margin-top:10px"><button onclick="salvarIntestino()">Salvar</button></div>
+        <div class="line"></div>
+        <div id="intHist" class="muted2 small"></div>
       </div>
     </section>
 
-    <!-- MEDIDAS -->
     <section id="sec-medidas" class="section">
       <div class="card">
-        <div class="row space">
-          <div>
-            <h2>📏 Medidas + ampulheta</h2>
-            <div class="muted">Cintura e glúteo para calcular a proporção.</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="exportar()">⬇️ Exportar</button>
-        </div>
-
+        <div class="row space"><div><h2>Medidas</h2><div class="sub">Peso, cintura, abdômen e glúteo.</div></div><button class="btnMini btnGhost" onclick="exportar()">Exportar</button></div>
         <label>Peso (kg)</label>
         <input type="number" id="mPeso" placeholder="Ex: 56.9">
-
         <label>Cintura (cm)</label>
         <input type="number" id="mCint" placeholder="Ex: 72">
-
         <label>Abdômen (cm)</label>
         <input type="number" id="mAbd" placeholder="Ex: 81">
-
         <label>Glúteo (cm)</label>
         <input type="number" id="mGlu" placeholder="Ex: 96">
-
-        <div class="row" style="margin-top:10px; flex-wrap:wrap">
-          <button class="btnPink" onclick="salvarMedidas()">Salvar</button>
-          <button class="btnGhost" onclick="limparMedidas()">🧹 Limpar tudo</button>
+        <div class="btnRow" style="margin-top:10px"><button onclick="salvarMedidas()">Salvar</button><button class="btnGhost" onclick="limparMedidas()">Limpar tudo</button></div>
+        <div class="line"></div>
+        <div class="grid2">
+          <div class="statBlock"><div class="muted">Ampulheta</div><div style="font-size:28px; font-weight:900; margin-top:5px" id="ampResult">—</div><div class="muted2 small" id="ampText">adicione cintura e glúteo</div></div>
+          <div class="statBlock"><div class="muted">Último peso</div><div style="font-size:28px; font-weight:900; margin-top:5px" id="pesoLast">—</div><div class="muted2 small">kg</div></div>
         </div>
-
-        <div class="divider"></div>
-        <div class="row space">
-          <div>
-            <div class="muted">🍑 Ampulheta (Glúteo ÷ Cintura): <b id="ampResult">—</b></div>
-            <div class="muted2 small" id="ampText">adicione cintura e glúteo</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <h3>📈 Evolução do glúteo (últimos registros)</h3>
-        <div id="gluteoHist" class="small muted2"></div>
-
+        <div class="line"></div>
+        <h3>Evolução do glúteo</h3>
+        <div id="gluteoHist" class="muted2 small"></div>
       </div>
     </section>
 
-    <!-- FOTOS -->
     <section id="sec-fotos" class="section">
       <div class="card">
-        <div class="row space">
-          <div>
-            <h2>📸 Fotos</h2>
-            <div class="muted">Guarde links/observações das suas fotos (15 em 15 dias).</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="limparFotos()">🧹 Limpar</button>
-        </div>
-
-        <label>Link da foto (Google Fotos / Drive / etc.)</label>
+        <div class="row space"><div><h2>Fotos</h2><div class="sub">Guarde links/observações das suas fotos.</div></div><button class="btnMini btnGhost" onclick="limparFotos()">Limpar</button></div>
+        <label>Link da foto</label>
         <input type="url" id="fotoUrl" placeholder="Cole aqui o link">
-
-        <label>Observação (ex: 15 dias, mesma luz)</label>
-        <input type="text" id="fotoObs" placeholder="Ex: frente/lado/costas">
-
-        <div class="row" style="margin-top:10px">
-          <button class="btnPink" onclick="salvarFoto()">➕ Salvar</button>
-        </div>
-
-        <div class="divider"></div>
-        <div id="fotoHist" class="small muted2"></div>
+        <label>Observação</label>
+        <input type="text" id="fotoObs" placeholder="Ex: frente / lado / costas">
+        <div class="btnRow" style="margin-top:10px"><button onclick="salvarFoto()">Salvar</button></div>
+        <div class="line"></div>
+        <div id="fotoHist" class="muted2 small"></div>
       </div>
     </section>
 
+    <section id="sec-perfil" class="section">
+      <div class="card">
+        <div class="row space"><div><h2>Perfil</h2><div class="sub">Dados pessoais e meta semanal.</div></div><button class="btnMini btnGhost" onclick="salvarPerfil()">Salvar perfil</button></div>
+        <label>Nome</label>
+        <input id="pNome" placeholder="Seu nome">
+        <div class="grid2">
+          <div><label>Idade</label><input id="pIdade" type="number" placeholder="29"></div>
+          <div><label>Peso (kg)</label><input id="pPeso" type="number" placeholder="72"></div>
+        </div>
+        <div class="grid2">
+          <div><label>Altura (cm)</label><input id="pAltura" type="number" placeholder="165"></div>
+          <div><label>Objetivo</label>
+            <select id="pObjetivo">
+              <option>Hipertrofia</option>
+              <option>Força</option>
+              <option>Resistência</option>
+              <option>Emagrecimento</option>
+            </select>
+          </div>
+        </div>
+        <label>Experiência</label>
+        <select id="pExperiencia">
+          <option>Iniciante (0-6 meses)</option>
+          <option>Intermediário (6-24 meses)</option>
+          <option>Avançado (2+ anos)</option>
+        </select>
+        <label>Meta semanal (dias)</label>
+        <input id="pMetaDias" type="number" min="1" max="7" placeholder="4">
+        <label>Dias de treino da semana</label>
+        <div class="pillRow" id="perfilDiasRow"></div>
+        <div class="line"></div>
+        <div class="note">Você pode ajustar seu objetivo e seus dias sem perder as áreas de água, intestino, proteínas e medidas.</div>
+      </div>
+    </section>
+
+    <section id="sec-historico" class="section">
+      <div class="card">
+        <div class="row space"><div><h2>Histórico</h2><div class="sub">Sem AXIS Index. Só progresso real.</div></div><button class="btnMini btnGhost" onclick="go('treino')">Voltar treino</button></div>
+        <div class="grid2" style="margin-top:12px">
+          <div class="statBlock"><div class="muted">Treinos na semana</div><div style="font-size:28px; font-weight:900; margin-top:6px" id="histWeekCount">0</div><div class="muted2 small">dias concluídos</div></div>
+          <div class="statBlock"><div class="muted">Exercícios concluídos</div><div style="font-size:28px; font-weight:900; margin-top:6px" id="histExercises">0</div><div class="muted2 small">no período salvo</div></div>
+        </div>
+        <div class="line"></div>
+        <div id="historicoLista"></div>
+      </div>
+    </section>
   </div>
 
-  <!-- Bottom Tabs -->
   <nav class="tabs" aria-label="Navegação">
     <div class="tabsInner">
       <div class="tab active" data-to="inicio" onclick="go('inicio')"><div class="ico">🏠</div><div class="lbl">Início</div></div>
       <div class="tab" data-to="treino" onclick="go('treino')"><div class="ico">🏋️</div><div class="lbl">Treino</div></div>
       <div class="tab" data-to="agua" onclick="go('agua')"><div class="ico">💧</div><div class="lbl">Água</div></div>
       <div class="tab" data-to="medidas" onclick="go('medidas')"><div class="ico">📏</div><div class="lbl">Medidas</div></div>
-      <div class="tab" data-to="fotos" onclick="go('fotos')"><div class="ico">📸</div><div class="lbl">Fotos</div></div>
+      <div class="tab" data-to="perfil" onclick="go('perfil')"><div class="ico">👤</div><div class="lbl">Perfil</div></div>
     </div>
   </nav>
 
-  <!-- Modal registrar cargas -->
-  <div id="modal" style="display:none; position:fixed; inset:0; z-index:80;">
-    <div style="position:absolute; inset:0; background: rgba(0,0,0,.65); backdrop-filter: blur(8px);" onclick="closeModal()"></div>
-    <div style="position:relative; max-width:560px; margin: 0 auto; padding: 18px 16px;">
-      <div class="card" style="margin-top: 20px;">
-        <div class="row space">
-          <div>
-            <h2>📝 Registrar cargas</h2>
-            <div class="muted small">Salva no seu celular. Ex: “Cadeira flexora: 25kg”.</div>
-          </div>
-          <button class="btnGhost btnMini" onclick="closeModal()">Fechar</button>
-        </div>
-        <label>Dia</label>
-        <select id="cDia"></select>
+  <div class="modal" id="swapModal">
+    <div class="backdrop" onclick="closeSwapModal()"></div>
+    <div class="modalPanel">
+      <div class="card">
+        <div class="row space"><div><h2>Trocar exercício</h2><div class="sub" id="swapModalTitle">Selecione um exercício</div></div><button class="btnMini btnGhost" onclick="closeSwapModal()">Fechar</button></div>
+        <div class="optionList" id="swapOptions"></div>
+      </div>
+    </div>
+  </div>
 
-        <label>Exercício</label>
-        <select id="cEx"></select>
-
-        <label>Carga (kg) / observação</label>
-        <input id="cCarga" placeholder="Ex: 25kg | 3×12">
-
-        <div class="row" style="margin-top:10px; flex-wrap:wrap">
-          <button class="btnPink" onclick="salvarCarga()">Salvar</button>
-          <button class="btnGhost" onclick="apagarCarga()">Apagar</button>
-        </div>
-
-        <div class="divider"></div>
-        <div class="small muted2" id="cStatus"></div>
+  <div class="modal" id="seriesModal">
+    <div class="backdrop" onclick="closeSeriesModal()"></div>
+    <div class="modalPanel">
+      <div class="card">
+        <div class="row space"><div><h2 id="seriesTitle">Séries</h2><div class="sub">Todos os exercícios com vídeo e séries editáveis.</div></div><button class="btnMini btnGhost" onclick="closeSeriesModal()">Fechar</button></div>
+        <div id="seriesRows"></div>
+        <div class="btnRow" style="margin-top:12px"><button onclick="addSerieLinha()">+ Adicionar série</button><button class="btnGhost" onclick="saveSeriesModal()">Salvar exercício</button></div>
       </div>
     </div>
   </div>
 
 <script>
-/* ------------------ Utils ------------------ */
-const KEY = "miria_sculpt_v1";
+const KEY = 'miria_sculpt_v2';
 function hoje(){ return new Date().toISOString().slice(0,10); }
 function clamp(n,min,max){ return Math.max(min, Math.min(max, n)); }
-function fmt(n, d=1){
-  const x = Number(n);
-  if(!isFinite(x)) return "—";
-  return (Math.round(x*Math.pow(10,d))/Math.pow(10,d)).toFixed(d);
-}
-function scrollTopSmooth(){ window.scrollTo({top:0, behavior:"smooth"}); }
+function fmt(n, d=1){ const x=Number(n); return isFinite(x) ? (Math.round(x*10**d)/10**d).toFixed(d) : '—'; }
+function scrollTopSmooth(){ window.scrollTo({top:0, behavior:'smooth'}); }
+function youtubeLink(q){ return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q + ' execução exercício'); }
 
-/* ------------------ Data ------------------ */
-let data = JSON.parse(localStorage.getItem(KEY) || "{}");
+const EXERCISE_LIBRARY = {
+  gluteo:[
+    ['Agachamento Sumô','3×12','12–20kg','Empurre o chão com o calcanhar.','agachamento sumô'],
+    ['Elevação Pélvica','4×10','20–40kg','Pausa 1s no topo e não arqueie lombar.','elevação pélvica hip thrust'],
+    ['Afundo com Halteres','3×12','6–12kg','Passo controlado e tronco levemente à frente.','afundo com halteres'],
+    ['Cadeira Abdutora','3×15','20–40kg','Segure 1s aberta.','cadeira abdutora'],
+    ['Glúteo Máquina','3×15','10–25kg','Controle na volta.','glúteo máquina'],
+    ['Agachamento Livre','3×15','livre','Desça com controle e peito aberto.','agachamento livre'],
+    ['Coice no Cabo','3×15','leve/médio','Foco total em extensão do quadril.','coice no cabo glúteo'],
+    ['Glúteo no Smith','3×12','leve/médio','Empurre o calcanhar para cima.','glúteo no smith'],
+    ['Passada','3×12','6–12kg','Passo longo para maior ativação de glúteo.','passada com halteres'],
+    ['Búlgaro','3×12','6–12kg','Desça lento e suba firme.','agachamento búlgaro'],
+    ['Levantamento Terra Sumô','3×12','20–60kg','Coluna neutra e joelhos alinhados.','terra sumô'],
+    ['Step-up','3×12','livre','Suba empurrando com o calcanhar.','step up glúteo'],
+    ['Abdutora Unilateral','3×15','leve','Controle total do movimento.','abdutora unilateral'],
+    ['Glúteo no Cabo','3×15','leve/médio','Contraia no topo.','glúteo no cabo']
+  ],
+  ombro:[
+    ['Desenvolvimento com Halteres','3×12','6–12kg','Controle sem jogar a lombar.','desenvolvimento com halteres'],
+    ['Desenvolvimento na Máquina','3×12','15–25kg','Mantenha a escápula estável.','desenvolvimento na máquina'],
+    ['Elevação Lateral','3×15','3–6kg','Suba até a linha do ombro.','elevação lateral'],
+    ['Elevação Frontal','3×12','4–6kg','Sem embalo.','elevação frontal'],
+    ['Crucifixo Invertido','3×12','leve/médio','Ative deltoide posterior.','crucifixo invertido']
+  ],
+  peito:[
+    ['Supino Reto','4×12','20–40kg','Peito aberto e punhos alinhados.','supino reto'],
+    ['Supino Inclinado','3×12','20–35kg','Desça controlado.','supino inclinado'],
+    ['Peck Deck','3×15','leve/médio','Controle no retorno.','peck deck'],
+    ['Crucifixo Máquina','3×12','leve/médio','Não estique demais.','crucifixo máquina']
+  ],
+  triceps:[
+    ['Tríceps Pulley','3×15','leve/médio','Cotovelo fixo.','triceps pulley'],
+    ['Tríceps Testa','3×12','leve/médio','Desça controlado.','triceps testa']
+  ],
+  quadriceps:[
+    ['Leg 45','4×15','80–120kg','Não trave o joelho.','leg press 45'],
+    ['Agachamento Hack','3×12','leve/médio','Desça com controle.','agachamento hack'],
+    ['Extensora','3×15','20–35kg','Suba forte, desça controlando.','cadeira extensora'],
+    ['Agachamento Búlgaro','3×12','6–12kg','Foco em quadríceps e glúteo.','agachamento búlgaro'],
+    ['Avanço com Halteres','3×12','6–12kg','Passo controlado.','avanço com halteres'],
+    ['Cadeira Flexora','3×15','20–35kg','Ative posterior na volta.','cadeira flexora']
+  ],
+  costas:[
+    ['Pulldown','4×12','20–35kg','Puxe com os cotovelos.','pulldown'],
+    ['Remada Baixa','3×15','20–35kg','Segure 1s atrás.','remada baixa'],
+    ['Remada Curvada','3×12','20–40kg','Coluna neutra.','remada curvada'],
+    ['Puxada Frente','3×12','20–35kg','Peito aberto.','puxada frente']
+  ],
+  biceps:[
+    ['Rosca Direta Barra','3×15','leve/médio','Sem balançar tronco.','rosca direta barra'],
+    ['Rosca Alternada','3×12','4–8kg','Controle na descida.','rosca alternada'],
+    ['Rosca Martelo','3×12','4–8kg','Cotovelo fixo.','rosca martelo']
+  ],
+  posterior:[
+    ['Stiff','4×15','10–30kg','Alongue posterior com coluna neutra.','stiff'],
+    ['Cadeira Flexora','4×15','20–35kg','Controle total.','cadeira flexora'],
+    ['Elevação Pélvica','3×20','20–35kg','Pausa no topo.','elevação pélvica hip thrust']
+  ],
+  panturrilha:[
+    ['Gêmeos Sentado','4×10→20','leve/médio','Pausa no pico.','gêmeos sentado'],
+    ['Gêmeos Plantar','4×10→20','leve/médio','Amplitude completa.','gêmeos plantar']
+  ]
+};
+
+function makeExercise(name, sets, target, tip, query, groups){
+  return { name, defaultSets: sets, target, tip, query, groups, videoUrl: youtubeLink(query), series:[{reps:'',kg:'',rpe:'',descanso:''}] };
+}
+
+const WORKOUT_TEMPLATES = {
+  SEG: { label:'Segunda', title:'Glúteos', groups:['gluteo'], exercises:[
+    makeExercise('Agachamento Sumô','4×15','Glúteo','Pés abertos e joelhos alinhados.','agachamento sumô',['gluteo']),
+    makeExercise('Elevação Pélvica','4×20','Glúteo','Contraia no topo.','elevação pélvica hip thrust',['gluteo']),
+    makeExercise('Afundo com Halteres','3×12','Glúteo','Passo firme e tronco levemente à frente.','afundo com halteres',['gluteo']),
+    makeExercise('Cadeira Abdutora','3×15','Glúteo','Segure 1s aberta.','cadeira abdutora',['gluteo']),
+    makeExercise('Glúteo Máquina','3×15','Glúteo','Controle na volta.','glúteo máquina',['gluteo']),
+    makeExercise('Agachamento Livre','3×15','Quadríceps','Amplitude confortável.','agachamento livre',['gluteo','quadriceps'])
+  ]},
+  TER: { label:'Terça', title:'Ombro, Peito & Tríceps', groups:['ombro','peito','triceps'], exercises:[
+    makeExercise('Supino Reto','4×12','Peito','Peito aberto e controle na descida.','supino reto',['peito']),
+    makeExercise('Desenvolvimento com Halteres','3×12','Ombro','Sem jogar lombar.','desenvolvimento com halteres',['ombro']),
+    makeExercise('Elevação Lateral','3×15','Ombro','Suba até a linha do ombro.','elevação lateral',['ombro']),
+    makeExercise('Tríceps Pulley','3×15','Tríceps','Cotovelo fixo.','triceps pulley',['triceps']),
+    makeExercise('Tríceps Testa','3×12','Tríceps','Desça com controle.','triceps testa',['triceps']),
+    makeExercise('Peck Deck','3×15','Peito','Controle no retorno.','peck deck',['peito'])
+  ]},
+  QUA: { label:'Quarta', title:'Pernas (foco em quadríceps)', groups:['quadriceps','ombro'], exercises:[
+    makeExercise('Leg 45','4×15','Quadríceps','Pé um pouco mais alto.','leg press 45',['quadriceps']),
+    makeExercise('Agachamento Hack','3×12','Quadríceps','Desça com controle.','agachamento hack',['quadriceps']),
+    makeExercise('Extensora','3×15','Quadríceps','Suba forte e desça controlando.','cadeira extensora',['quadriceps']),
+    makeExercise('Agachamento Búlgaro','3×12','Quadríceps','Tronco alinhado.','agachamento búlgaro',['quadriceps','gluteo']),
+    makeExercise('Avanço com Halteres','3×12','Quadríceps','Passo estável.','avanço com halteres',['quadriceps']),
+    makeExercise('Cadeira Flexora','3×15','Posterior','Controle a volta.','cadeira flexora',['quadriceps','posterior']),
+    makeExercise('Crucifixo Invertido','3×12','Ombro','Foco no deltoide posterior.','crucifixo invertido',['ombro'])
+  ]},
+  QUI: { label:'Quinta', title:'Costas & Bíceps', groups:['costas','biceps','ombro'], exercises:[
+    makeExercise('Pulldown','4×12','Costas','Puxe com os cotovelos.','pulldown',['costas']),
+    makeExercise('Remada Baixa','3×15','Costas','Segure 1s atrás.','remada baixa',['costas']),
+    makeExercise('Remada Curvada','3×12','Costas','Coluna neutra.','remada curvada',['costas']),
+    makeExercise('Rosca Direta Barra','3×15','Bíceps','Sem balançar.','rosca direta barra',['biceps']),
+    makeExercise('Rosca Alternada','3×12','Bíceps','Controle total.','rosca alternada',['biceps']),
+    makeExercise('Rosca Martelo','3×12','Bíceps','Cotovelo fixo.','rosca martelo',['biceps']),
+    makeExercise('Elevação Frontal','3×12','Ombro','Sem embalo.','elevação frontal',['ombro'])
+  ]},
+  SEX: { label:'Sexta', title:'Posteriores, Glúteos & Panturrilha', groups:['posterior','gluteo','panturrilha'], exercises:[
+    makeExercise('Stiff','4×15','Posterior','Coluna neutra.','stiff',['posterior']),
+    makeExercise('Cadeira Flexora','4×15','Posterior','Controle total.','cadeira flexora',['posterior']),
+    makeExercise('Elevação Pélvica','3×20','Glúteo','Pausa no topo.','elevação pélvica hip thrust',['gluteo','posterior']),
+    makeExercise('Agachamento Sumô','3×12','Glúteo','Empurre o chão com o calcanhar.','agachamento sumô',['gluteo']),
+    makeExercise('Gêmeos Sentado','4×10→20','Panturrilha','Pausa no pico.','gêmeos sentado',['panturrilha']),
+    makeExercise('Gêmeos Plantar','4×10→20','Panturrilha','Amplitude completa.','gêmeos plantar',['panturrilha'])
+  ]}
+};
+
+function getDayCodeByDate(dateStr=hoje()){
+  const day = new Date(dateStr + 'T12:00:00').getDay();
+  return ['DOM','SEG','TER','QUA','QUI','SEX','SAB'][day] || 'SEG';
+}
+
+let data = JSON.parse(localStorage.getItem(KEY) || '{}');
 data.agua = data.agua || {};
 data.prot = data.prot || {};
 data.intestino = data.intestino || {};
 data.medidas = data.medidas || [];
+$dataFotos = null;
 data.fotos = data.fotos || [];
-data.cargas = data.cargas || {}; // { "SEG|Cadeira Flexora": "25kg" }
+data.profile = data.profile || {
+  nome:'Miriã', idade:'', peso:'', altura:'', objetivo:'Hipertrofia', experiencia:'Intermediário (6-24 meses)', metaDias:5,
+  diasSemana:['SEG','TER','QUA','QUI','SEX']
+};
+data.training = data.training || JSON.parse(JSON.stringify(WORKOUT_TEMPLATES));
+data.done = data.done || {}; // date|day|exercise => 'done'|'notdone'
+data.history = data.history || []; // {date,day,title,completed,total}
 
 function save(){ localStorage.setItem(KEY, JSON.stringify(data)); }
 
-/* ------------------ Navigation (NO TRAVA) ------------------ */
+let dayOrder = ['SEG','TER','QUA','QUI','SEX'];
+let diaAtivo = dayOrder.includes(getDayCodeByDate()) ? getDayCodeByDate() : 'SEG';
+let swapContext = null;
+let seriesContext = null;
+
 function go(name){
-  // switch sections
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  const sec = document.getElementById("sec-"+name);
-  if(sec) sec.classList.add("active");
-
-  // highlight tab
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const sec = document.getElementById('sec-'+name); if(sec) sec.classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   const tab = document.querySelector(`.tab[data-to="${name}"]`);
-  if(tab) tab.classList.add("active");
-
-  // if shortcut goes to proteina/intestino, keep bottom tab as inicio to avoid confusion
-  if(name==="proteina" || name==="intestino"){
-    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-    document.querySelector(`.tab[data-to="inicio"]`).classList.add("active");
+  if(tab) tab.classList.add('active');
+  if(['proteina','intestino','fotos','historico'].includes(name)){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector('.tab[data-to="inicio"]').classList.add('active');
   }
-
-  // scroll to top of page so it feels like app navigation
-  window.scrollTo({top:0, behavior:"instant"});
+  window.scrollTo({top:0, behavior:'instant'});
+  if(name==='historico') renderHistorico();
+  if(name==='perfil') renderPerfil();
 }
 
-/* ------------------ Água ------------------ */
-function ensureAguaDay(){
-  if(!data.agua[hoje()]) data.agua[hoje()] = { total:0, stack:[] };
-}
-function addAgua(v){
-  ensureAguaDay();
-  data.agua[hoje()].total += v;
-  data.agua[hoje()].stack.push(v);
-  save(); renderAgua(); renderDashboard();
-}
-function addAguaManual(){
-  const v = Number(document.getElementById("aguaManual").value || 0);
-  if(v>0){ addAgua(v); document.getElementById("aguaManual").value=""; }
-}
-function desfazerAgua(){
-  ensureAguaDay();
-  const last = data.agua[hoje()].stack.pop();
-  if(last){ data.agua[hoje()].total -= last; }
-  save(); renderAgua(); renderDashboard();
-}
-function zerarAgua(){
-  data.agua[hoje()] = { total:0, stack:[] };
-  save(); renderAgua(); renderDashboard();
-}
-function aguaMedia7(){
-  let sum=0, cnt=0;
-  for(let i=0;i<7;i++){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
-    if(data.agua[k]){ sum += Number(data.agua[k].total||0); cnt++; }
-  }
-  return cnt? Math.round(sum/cnt) : 0;
-}
-function renderAgua(){
-  ensureAguaDay();
-  const meta = Number(document.getElementById("aguaMeta").value || 2500);
-  const total = Number(data.agua[hoje()].total||0);
-
-  document.getElementById("aguaStatus").textContent = total + " ml";
-  const pct = clamp((total/meta)*100, 0, 100);
-  document.getElementById("aguaBar").style.width = pct + "%";
-  document.getElementById("aguaMedia").textContent = aguaMedia7() + " ml";
-
-  document.getElementById("aguaHoje").textContent = total;
-  document.getElementById("aguaMetaLabel").textContent = meta;
-}
-
-/* ------------------ Proteína automática ------------------ */
-const fatores = {
-  frango: { tipo:"g", por:100, prot:31 },
-  carne:  { tipo:"g", por:100, prot:26 },
-  ovo:    { tipo:"un", por:1,   prot:6  },
-  iog:    { tipo:"un", por:1,   prot:10 },
-  queijo: { tipo:"g", por:100, prot:25 },
-  whey:   { tipo:"sc", por:1,   prot:20 }
-};
-
-function ensureProtDay(){
-  if(!data.prot[hoje()]) data.prot[hoje()] = { total:0, stack:[], items:[] };
-}
-function protMedia7(){
-  let sum=0, cnt=0;
-  for(let i=0;i<7;i++){
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const k = d.toISOString().slice(0,10);
-    if(data.prot[k]){ sum += Number(data.prot[k].total||0); cnt++; }
-  }
-  return cnt? Math.round(sum/cnt) : 0;
-}
-function calcProt(item, qtd){
-  const cfg = fatores[item];
-  qtd = Number(qtd||0);
-  if(!cfg || qtd<=0) return 0;
-  if(cfg.por===1) return qtd * cfg.prot;
-  return (qtd / cfg.por) * cfg.prot;
-}
-function updateProtQtdLabel(){
-  const item = document.getElementById("protItem").value;
-  const cfg = fatores[item];
-  const label = (cfg.tipo==="g") ? "Quantidade (g)" :
-                (cfg.tipo==="un") ? "Quantidade (unidades)" : "Quantidade (scoops)";
-  document.getElementById("protQtdLabel").textContent = label;
-  document.getElementById("protQtd").placeholder = (cfg.tipo==="g") ? "Ex: 150" : "Ex: 2";
-}
-document.getElementById("protItem").addEventListener("change", updateProtQtdLabel);
-
-function addProtItem(){
-  ensureProtDay();
-  const item = document.getElementById("protItem").value;
-  const qtd = Number(document.getElementById("protQtd").value || 0);
-  if(qtd<=0) return;
-
-  const prot = calcProt(item, qtd);
-  const nome = document.getElementById("protItem").selectedOptions[0].textContent;
-  data.prot[hoje()].total += prot;
-  data.prot[hoje()].stack.push({item,qtd,prot});
-  data.prot[hoje()].items.push({ts:Date.now(), item, nome, qtd, prot});
+function statusKey(date, day, exercise){ return `${date}|${day}|${exercise}`; }
+function getExerciseStatus(day, exercise, date=hoje()){ return data.done[statusKey(date, day, exercise)] || 'todo'; }
+function setExerciseStatus(day, exercise, status, date=hoje()){
+  const key = statusKey(date, day, exercise);
+  if(status==='todo') delete data.done[key];
+  else data.done[key] = status;
   save();
-  document.getElementById("protQtd").value="";
-  renderProt(); renderDashboard();
 }
-function desfazerProt(){
-  ensureProtDay();
-  const last = data.prot[hoje()].stack.pop();
-  if(last){
-    data.prot[hoje()].total -= last.prot;
-    // remove last matching item from items list
-    data.prot[hoje()].items.pop();
-  }
-  save(); renderProt(); renderDashboard();
+function toggleExercise(day, exercise){
+  const current = getExerciseStatus(day, exercise);
+  const next = current==='done' ? 'notdone' : 'done';
+  setExerciseStatus(day, exercise, next);
+  renderTreino(); renderInicio(); renderHistorico();
 }
-function zerarProt(){
-  data.prot[hoje()] = { total:0, stack:[], items:[] };
-  save(); renderProt(); renderDashboard();
+function setExerciseNotDone(day, exercise){ setExerciseStatus(day, exercise, 'notdone'); renderTreino(); renderInicio(); renderHistorico(); }
+
+function renderDayStrips(){
+  const html = dayOrder.map(d=>`<div class="dayBtn ${d===diaAtivo?'active':''}" onclick="setDia('${d}')">${d}</div>`).join('');
+  document.getElementById('weekPills').innerHTML = html;
+  document.getElementById('homeDayStrip').innerHTML = html;
 }
-function renderProt(){
-  ensureProtDay();
-  const meta = Number(document.getElementById("protMeta").value || 100);
-  const total = Number(data.prot[hoje()].total||0);
-  const pct = clamp((total/meta)*100, 0, 100);
+function setDia(d){ diaAtivo=d; renderDayStrips(); renderTreino(); renderInicio(); }
 
-  document.getElementById("protStatus").textContent = Math.round(total);
-  document.getElementById("protFaltam").textContent = Math.max(0, Math.round(meta - total));
-  document.getElementById("protBar").style.width = pct + "%";
-  document.getElementById("protMedia").textContent = protMedia7();
+function getDayProgress(day, date=hoje()){
+  const items = data.training[day].exercises;
+  const total = items.length;
+  let done = 0, notdone = 0;
+  items.forEach(ex=>{
+    const st = getExerciseStatus(day, ex.name, date);
+    if(st==='done') done++;
+    if(st==='notdone') notdone++;
+  });
+  return {total, done, notdone, pct: total ? Math.round((done/total)*100) : 0};
+}
 
-  document.getElementById("protHoje").textContent = Math.round(total);
-  document.getElementById("protMetaLabel").textContent = meta;
+function renderInicio(){
+  document.getElementById('helloName').textContent = data.profile.nome || 'Miriã';
+  const prog = getDayProgress(diaAtivo);
+  const todayTpl = data.training[diaAtivo];
+  document.getElementById('todayWorkoutTitle').textContent = `${diaAtivo} • ${todayTpl.title}`;
+  document.getElementById('todayProgressBar').style.width = prog.pct + '%';
+  document.getElementById('todayProgressText').textContent = `${prog.done}/${prog.total}`;
+  document.getElementById('todayPct').textContent = `${prog.pct}%`;
 
-  // list
-  const items = (data.prot[hoje()].items||[]);
-  if(!items.length){
-    document.getElementById("protLista").innerHTML = "Sem itens hoje. 👑";
+  ensureAguaDay(); ensureProtDay();
+  const aguaMeta = Number(document.getElementById('aguaMeta')?.value || 2500);
+  const protMeta = Number(document.getElementById('protMeta')?.value || 100);
+  document.getElementById('aguaHojeHome').textContent = data.agua[hoje()].total || 0;
+  document.getElementById('aguaMetaHome').textContent = aguaMeta;
+  document.getElementById('protHojeHome').textContent = Math.round(data.prot[hoje()].total || 0);
+  document.getElementById('protMetaHome').textContent = protMeta;
+
+  const m = data.medidas || [];
+  if(m.length){
+    const last = m[m.length-1];
+    const ratio = last.gluteo/last.cintura;
+    document.getElementById('ampHome').textContent = fmt(ratio,2);
+    document.getElementById('ampHomeTxt').textContent = ampNota(ratio);
   }else{
-    document.getElementById("protLista").innerHTML = items.map(it=>{
-      const p = Math.round(it.prot);
-      return `• ${it.nome} — <b>${it.qtd}</b> → <b>${p}g</b>`;
-    }).join("<br>");
+    document.getElementById('ampHome').textContent = '—';
+    document.getElementById('ampHomeTxt').textContent = 'adicione medidas';
   }
 }
-
-/* ------------------ Intestino ------------------ */
-function salvarIntestino(){
-  data.intestino[hoje()] = {
-    foi: document.getElementById("intSel").value,
-    chia: document.getElementById("chiaCheck").checked
-  };
-  save(); renderIntestino(); renderDashboard();
-}
-function limparIntestino(){
-  data.intestino = {};
-  save(); renderIntestino(); renderDashboard();
-}
-function renderIntestino(){
-  const rec = data.intestino[hoje()];
-  if(rec){
-    document.getElementById("intSel").value = rec.foi;
-    document.getElementById("chiaCheck").checked = !!rec.chia;
-  }
-  const entries = Object.entries(data.intestino).sort((a,b)=>a[0].localeCompare(b[0]));
-  const last = entries.slice(-7).reverse();
-  document.getElementById("intHist").innerHTML = last.length
-    ? last.map(([d,v])=>`<b>${d}</b> — ${v.foi}${v.chia? " + chia":""}`).join("<br>")
-    : "Sem histórico ainda.";
-}
-
-/* ------------------ Medidas + ampulheta ------------------ */
-function salvarMedidas(){
-  const rec = {
-    data: hoje(),
-    peso: Number(document.getElementById("mPeso").value || 0),
-    cintura: Number(document.getElementById("mCint").value || 0),
-    abdomen: Number(document.getElementById("mAbd").value || 0),
-    gluteo: Number(document.getElementById("mGlu").value || 0),
-  };
-  // basic validation
-  if(!rec.cintura || !rec.gluteo){ alert("Preencha pelo menos Cintura e Glúteo."); return; }
-  data.medidas.push(rec);
-  save();
-  renderMedidas(); renderDashboard();
-}
-function limparMedidas(){
-  data.medidas = [];
-  save();
-  renderMedidas(); renderDashboard();
-}
-function ampNota(val){
-  // reference: higher ratio => stronger hourglass
-  if(!isFinite(val)) return "—";
-  if(val >= 1.35) return "Ampulheta forte";
-  if(val >= 1.28) return "Ampulheta boa";
-  if(val >= 1.20) return "Em construção";
-  return "Foco em glúteo + postura";
-}
-function renderMedidas(){
-  const list = data.medidas || [];
-  if(list.length){
-    const last = list[list.length-1];
-    document.getElementById("mPeso").value = last.peso || "";
-    document.getElementById("mCint").value = last.cintura || "";
-    document.getElementById("mAbd").value = last.abdomen || "";
-    document.getElementById("mGlu").value = last.gluteo || "";
-    const ratio = last.gluteo / last.cintura;
-    document.getElementById("ampResult").textContent = fmt(ratio,2);
-    document.getElementById("ampText").textContent = ampNota(ratio);
-    document.getElementById("ampVal").textContent = fmt(ratio,2);
-    document.getElementById("ampNota").textContent = ampNota(ratio);
-  }else{
-    document.getElementById("ampResult").textContent = "—";
-    document.getElementById("ampText").textContent = "adicione cintura e glúteo";
-    document.getElementById("ampVal").textContent = "—";
-    document.getElementById("ampNota").textContent = "adicione medidas";
-  }
-
-  const last10 = list.slice(-10).reverse();
-  document.getElementById("gluteoHist").innerHTML = last10.length
-    ? last10.map(r=>`• <b>${r.data}</b> — glúteo: <b>${r.gluteo}cm</b> • cintura: ${r.cintura}cm`).join("<br>")
-    : "Sem registros ainda.";
-}
-
-/* ------------------ Fotos (links) ------------------ */
-function salvarFoto(){
-  const url = (document.getElementById("fotoUrl").value || "").trim();
-  const obs = (document.getElementById("fotoObs").value || "").trim();
-  if(!url){ alert("Cole o link da foto."); return; }
-  data.fotos.push({data: hoje(), url, obs});
-  save();
-  document.getElementById("fotoUrl").value="";
-  document.getElementById("fotoObs").value="";
-  renderFotos();
-}
-function limparFotos(){
-  data.fotos = [];
-  save(); renderFotos();
-}
-function renderFotos(){
-  const list = (data.fotos||[]).slice(-15).reverse();
-  document.getElementById("fotoHist").innerHTML = list.length
-    ? list.map(f=>`• <b>${f.data}</b> — <a class="video" href="${f.url}" target="_blank" rel="noopener">Abrir</a> <span class="muted2">${f.obs||""}</span>`).join("<br><br>")
-    : "Sem links ainda.";
-}
-
-/* ------------------ Treino data ------------------ */
-const treino = {
-  "SEG": {
-    titulo: "Segunda • Glúteo / Posterior 🍑",
-    itens: [
-      { nome:"Cadeira Flexora", sets:"3×12", alvo:"20–25kg", tip:"Controle total. Sem tirar o quadril do banco.", q:"cadeira flexora como fazer correto" },
-      { nome:"Stiff com halter", sets:"3×12", alvo:"6–8kg cada lado", tip:"Coluna neutra. Desce devagar. Sente alongar posterior.", q:"stiff com halter como fazer" },
-      { nome:"Elevação pélvica (Hip Thrust)", sets:"4×10", alvo:"20kg (meta evoluir)", tip:"Pausa 1s no topo. Não arquear lombar.", q:"elevação pélvica hip thrust como fazer" },
-      { nome:"Abdutora máquina", sets:"3×15", alvo:"30–35kg", tip:"Inclina levemente pra frente e segura 1s aberta.", q:"abdutora máquina como usar" },
-      { nome:"Cardio (opcional)", sets:"12 min", alvo:"esteira inclinada", tip:"Leve/moderado pra ajudar barriga sem perder glúteo.", q:"esteira inclinada caminhada como fazer" }
-    ]
-  },
-  "TER": {
-    titulo: "Terça • Peito / Ombro + Vácuo",
-    itens: [
-      { nome:"Supino inclinado máquina", sets:"3×12", alvo:"15–20kg", tip:"Peito aberto. Ombros pra baixo.", q:"supino inclinado máquina como fazer" },
-      { nome:"Crucifixo máquina", sets:"3×12", alvo:"15kg", tip:"Controlado. Não esticar demais.", q:"crucifixo máquina como fazer" },
-      { nome:"Elevação lateral halter", sets:"3×12", alvo:"4kg", tip:"Sobe até linha do ombro. Sem balançar.", q:"elevação lateral halter como fazer" },
-      { nome:"Desenvolvimento ombro halter", sets:"3×10", alvo:"6kg", tip:"Controle. Não jogar a lombar.", q:"desenvolvimento ombro halter como fazer" },
-      { nome:"Vácuo abdominal", sets:"3×20s", alvo:"cintura marcada", tip:"Solta o ar e puxa o umbigo pra dentro.", q:"vacuum abdominal como fazer" }
-    ]
-  },
-  "QUA": {
-    titulo: "Quarta • Quadríceps + Glúteo",
-    itens: [
-      { nome:"Leg Press", sets:"4×12", alvo:"80kg (meta 100–110kg)", tip:"Pé um pouco mais alto. Não travar joelho.", q:"leg press como fazer correto" },
-      { nome:"Agachamento no Smith", sets:"3×10", alvo:"10kg cada lado", tip:"Pés levemente à frente. Desce controlado.", q:"agachamento no smith como fazer" },
-      { nome:"Cadeira Extensora", sets:"3×12", alvo:"25kg", tip:"Sobe forte e desce controlando.", q:"cadeira extensora como fazer" },
-      { nome:"Abdutora", sets:"3×15", alvo:"30–35kg", tip:"Foco no glúteo lateral (ajuda ampulheta).", q:"abdutora máquina como usar" }
-    ]
-  },
-  "QUI": {
-    titulo: "Quinta • Costas + Postura + Core",
-    itens: [
-      { nome:"Puxada frente", sets:"3×12", alvo:"25kg", tip:"Puxa com cotovelos. Ombros pra baixo.", q:"puxada frente na polia como fazer" },
-      { nome:"Remada baixa", sets:"3×12", alvo:"25kg", tip:"Segura 1s atrás. Postura firme.", q:"remada baixa na polia como fazer" },
-      { nome:"Face Pull", sets:"3×15", alvo:"leve/médio", tip:"Postura e colo bonito. Cotovelos altos.", q:"face pull como fazer" },
-      { nome:"Prancha", sets:"3×40s", alvo:"core firme", tip:"Barriga pra dentro. Sem cair lombar.", q:"prancha abdominal como fazer" }
-    ]
-  },
-  "SEX": {
-    titulo: "Sexta • Glúteo (pesado) + Posterior 🍑",
-    itens: [
-      { nome:"Elevação pélvica (Hip Thrust) pesado", sets:"4×8", alvo:"30kg (meta 45kg)", tip:"Forma perfeita. Pausa no topo.", q:"hip thrust como fazer" },
-      { nome:"Stiff", sets:"3×12", alvo:"8kg cada lado", tip:"Controle, coluna neutra.", q:"stiff com halter como fazer" },
-      { nome:"Afundo andando", sets:"3×10 cada perna", alvo:"4–6kg", tip:"Tronco levemente à frente, calcanhar empurra.", q:"afundo andando como fazer" },
-      { nome:"Abdutora", sets:"4×15", alvo:"35–40kg", tip:"Segura 1s aberta. Glúteo lateral.", q:"abdutora máquina como usar" },
-      { nome:"Vácuo abdominal", sets:"3×20s", alvo:"cintura", tip:"Consistência 3×/semana.", q:"vacuum abdominal como fazer" }
-    ]
-  }
-};
-
-const dias = ["SEG","TER","QUA","QUI","SEX"];
-let diaAtivo = "SEG";
-
-function videoLink(q){
-  const query = encodeURIComponent(q + " português");
-  return "https://www.youtube.com/results?search_query=" + query;
-}
-
-function renderWeekPills(){
-  const el = document.getElementById("weekPills");
-  el.innerHTML = dias.map(d=>{
-    const cls = "day" + (d===diaAtivo ? " active":"");
-    return `<button class="${cls}" onclick="setDia('${d}')">${d}</button>`;
-  }).join("");
-}
-
-function setDia(d){
-  diaAtivo = d;
-  renderWeekPills();
-  renderTreino();
-  // keep user at the content area
-  const node = document.getElementById("treinoLista");
-  if(node) node.scrollIntoView({behavior:"smooth", block:"start"});
-}
-
-function cargaKey(d, ex){ return d+"|"+ex; }
 
 function renderTreino(){
-  const info = treino[diaAtivo];
-  const listEl = document.getElementById("treinoLista");
-  listEl.innerHTML = `
-    <div class="ex" style="margin-top:14px">
-      <div class="row space">
-        <div>
-          <div class="muted2 small">Clique em “Ver vídeo (PT)” para execução correta</div>
-          <h2 style="margin-top:6px">${info.titulo}</h2>
-        </div>
-        <div class="muted2 small">💾 Salve cargas no botão “Registrar cargas”</div>
-      </div>
-    </div>
-  `;
+  const info = data.training[diaAtivo];
+  document.getElementById('treinoDiaNome').textContent = info.label;
+  document.getElementById('treinoTitulo').textContent = info.title;
+  const prog = getDayProgress(diaAtivo);
+  document.getElementById('treinoResumoChip').textContent = `${prog.done}/${prog.total}`;
+  document.getElementById('treinoResumoChip').className = 'statusDot ' + (prog.done===prog.total && prog.total ? 'done' : (prog.notdone ? 'notdone':'todo'));
 
-  info.itens.forEach((it, idx)=>{
-    const saved = data.cargas[cargaKey(diaAtivo, it.nome)];
-    const savedTxt = saved ? `✅ ${saved}` : "Sem registro ainda";
-    listEl.innerHTML += `
-      <div class="ex">
-        <div class="exTop">
-          <div>
-            <div class="exName">${idx+1}. ${it.nome}</div>
-            <div class="exMeta">${it.sets} • 👉 ${it.alvo}</div>
-            <div class="exTip">💡 ${it.tip}</div>
-          </div>
-          <div class="col" style="align-items:flex-end">
-            <a class="video" href="${videoLink(it.q)}" target="_blank" rel="noopener">▶️ Ver vídeo (PT)</a>
-            <div class="muted2 small" style="margin-top:8px">${savedTxt}</div>
-          </div>
+  const list = document.getElementById('treinoLista');
+  list.innerHTML = '';
+  info.exercises.forEach((ex, idx)=>{
+    const st = getExerciseStatus(diaAtivo, ex.name);
+    const cls = st==='done' ? 'done' : 'notdone';
+    const label = st==='done' ? 'Feito' : (st==='notdone' ? 'Não feito' : 'Pendente');
+    const statusClass = st==='done' ? 'done' : (st==='notdone' ? 'notdone' : 'todo');
+    const card = document.createElement('div');
+    card.className = `exerciseCard ${cls}`;
+    card.innerHTML = `
+      <div class="top">
+        <div>
+          <div class="exerciseName">${idx+1}. ${ex.name}</div>
+          <div class="exerciseMeta">${ex.defaultSets} • ${ex.target}</div>
+          <div class="exerciseTip">💡 ${ex.tip}</div>
         </div>
+        <div class="col" style="align-items:flex-end; min-width:110px">
+          <div class="statusDot ${statusClass}">${st==='done'?'🟢':(st==='notdone'?'🔴':'⚪')} ${label}</div>
+        </div>
+      </div>
+      <div class="exerciseActions">
+        <button class="toggleBtn" onclick="toggleExercise('${diaAtivo}', ${JSON.stringify(ex.name)})">${st==='done' ? 'Marcar não feito' : 'Marcar feito'}</button>
+        <button class="btnGhost" onclick="setExerciseNotDone('${diaAtivo}', ${JSON.stringify(ex.name)})">Não feito</button>
+        <a class="videoLink" href="${ex.videoUrl}" target="_blank" rel="noopener">▶ Vídeo</a>
+        <button class="swapBtn" onclick="openSwapModal('${diaAtivo}', ${idx})">Trocar exercício</button>
+        <button class="swapBtn" onclick="openSeriesModal('${diaAtivo}', ${idx})">Séries</button>
       </div>
     `;
+    list.appendChild(card);
   });
 }
 
-/* ------------------ Modal cargas ------------------ */
-function openCargaModal(){
-  const modal = document.getElementById("modal");
-  modal.style.display="block";
-  // fill selects
-  const cDia = document.getElementById("cDia");
-  cDia.innerHTML = dias.map(d=>`<option value="${d}">${d}</option>`).join("");
-  cDia.value = diaAtivo;
-
-  fillExSelect();
-  loadCargaPreview();
+function openSwapModal(day, index){
+  swapContext = {day, index};
+  const ex = data.training[day].exercises[index];
+  const groups = ex.groups || data.training[day].groups;
+  const options = [];
+  groups.forEach(g=>{
+    (EXERCISE_LIBRARY[g] || []).forEach(item=> options.push({group:g, item}));
+  });
+  const unique = [];
+  const seen = new Set();
+  options.forEach(o=>{ if(!seen.has(o.item[0])) { seen.add(o.item[0]); unique.push(o); }});
+  document.getElementById('swapModalTitle').textContent = `${data.training[day].label} • ${data.training[day].title}`;
+  const box = document.getElementById('swapOptions');
+  box.innerHTML = unique.map(o=>{
+    const [name, sets, target, tip, query] = o.item;
+    return `
+      <div class="optionItem">
+        <div>
+          <div style="font-weight:900">${name}</div>
+          <div class="muted2 small">${sets} • ${target} • ${o.group}</div>
+        </div>
+        <div class="btnRow">
+          <a class="videoLink" href="${youtubeLink(query)}" target="_blank" rel="noopener">▶ Vídeo</a>
+          <button onclick="confirmSwap(${JSON.stringify(name)}, ${JSON.stringify(sets)}, ${JSON.stringify(target)}, ${JSON.stringify(tip)}, ${JSON.stringify(query)}, ${JSON.stringify(o.group)})">Usar</button>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('swapModal').classList.add('open');
 }
-function closeModal(){ document.getElementById("modal").style.display="none"; }
-function fillExSelect(){
-  const d = document.getElementById("cDia").value;
-  const cEx = document.getElementById("cEx");
-  cEx.innerHTML = treino[d].itens.map(it=>`<option value="${it.nome}">${it.nome}</option>`).join("");
-  cEx.value = treino[d].itens[0].nome;
-}
-document.getElementById("cDia").addEventListener("change", ()=>{ fillExSelect(); loadCargaPreview(); });
-document.getElementById("cEx").addEventListener("change", loadCargaPreview);
-
-function loadCargaPreview(){
-  const d = document.getElementById("cDia").value;
-  const ex = document.getElementById("cEx").value;
-  const key = cargaKey(d, ex);
-  const v = data.cargas[key] || "";
-  document.getElementById("cCarga").value = v;
-  document.getElementById("cStatus").innerHTML = v ? `Salvo: <b>${v}</b>` : "Sem registro salvo.";
-}
-function salvarCarga(){
-  const d = document.getElementById("cDia").value;
-  const ex = document.getElementById("cEx").value;
-  const val = (document.getElementById("cCarga").value || "").trim();
-  const key = cargaKey(d, ex);
-  if(!val){ alert("Digite uma carga/observação."); return; }
-  data.cargas[key] = val;
-  save();
-  document.getElementById("cStatus").innerHTML = `Salvo: <b>${val}</b>`;
-  // update treino view if same day
-  renderTreino();
-}
-function apagarCarga(){
-  const d = document.getElementById("cDia").value;
-  const ex = document.getElementById("cEx").value;
-  const key = cargaKey(d, ex);
-  delete data.cargas[key];
-  save();
-  document.getElementById("cCarga").value="";
-  document.getElementById("cStatus").innerHTML = "Registro apagado.";
-  renderTreino();
+function closeSwapModal(){ document.getElementById('swapModal').classList.remove('open'); swapContext=null; }
+function confirmSwap(name, sets, target, tip, query, group){
+  if(!swapContext) return;
+  const current = data.training[swapContext.day].exercises[swapContext.index];
+  const prevSeries = current.series || [{reps:'',kg:'',rpe:'',descanso:''}];
+  data.training[swapContext.day].exercises[swapContext.index] = makeExercise(name, sets, target, tip, query, [group]);
+  data.training[swapContext.day].exercises[swapContext.index].series = prevSeries;
+  save(); closeSwapModal(); renderTreino();
 }
 
-/* ------------------ Dashboard ------------------ */
-function renderDashboard(){
-  // agua
-  ensureAguaDay();
-  const aguaTotal = Number(data.agua[hoje()].total||0);
-  document.getElementById("aguaHoje").textContent = aguaTotal;
-
-  const aguaMeta = Number(document.getElementById("aguaMeta").value || 2500);
-  document.getElementById("aguaMetaLabel").textContent = aguaMeta;
-
-  // prot
-  ensureProtDay();
-  const protTotal = Math.round(Number(data.prot[hoje()].total||0));
-  document.getElementById("protHoje").textContent = protTotal;
-
-  const protMeta = Number(document.getElementById("protMeta").value || 100);
-  document.getElementById("protMetaLabel").textContent = protMeta;
-
-  // intestino
-  const rec = data.intestino[hoje()];
-  document.getElementById("intHoje").textContent = rec ? (rec.foi==="sim" ? "✅ Sim" : (rec.foi==="pouco" ? "➖ Pouco" : "❌ Não")) : "—";
-  document.getElementById("chiaHoje").textContent = "Chia: " + (rec ? (rec.chia ? "✅" : "—") : "—");
-
-  // ampulheta
-  const m = (data.medidas||[]);
-  if(m.length){
-    const last = m[m.length-1];
-    const ratio = last.gluteo / last.cintura;
-    document.getElementById("ampVal").textContent = fmt(ratio,2);
-    document.getElementById("ampNota").textContent = ampNota(ratio);
-  }else{
-    document.getElementById("ampVal").textContent = "—";
-    document.getElementById("ampNota").textContent = "adicione medidas";
-  }
+function openSeriesModal(day, index){
+  seriesContext = {day,index};
+  const ex = data.training[day].exercises[index];
+  document.getElementById('seriesTitle').textContent = ex.name;
+  renderSeriesRows(ex.series || [{reps:'',kg:'',rpe:'',descanso:''}], ex.videoUrl);
+  document.getElementById('seriesModal').classList.add('open');
+}
+function closeSeriesModal(){ document.getElementById('seriesModal').classList.remove('open'); seriesContext=null; }
+function renderSeriesRows(series, videoUrl){
+  const wrap = document.getElementById('seriesRows');
+  wrap.innerHTML = `<a class="videoLink" href="${videoUrl}" target="_blank" rel="noopener" style="margin-top:10px">▶ Assistir execução</a>`;
+  series.forEach((s, i)=>{
+    const row = document.createElement('div');
+    row.className = 'seriesRow';
+    row.innerHTML = `
+      <div class="muted small">Série ${i+1}</div>
+      <input placeholder="Reps" value="${s.reps||''}" data-k="reps">
+      <input placeholder="Kg" value="${s.kg||''}" data-k="kg">
+      <input placeholder="RPE" value="${s.rpe||''}" data-k="rpe">
+      <input placeholder="Desc(s)" value="${s.descanso||''}" data-k="descanso">
+      <button class="btnMini btnGhost" onclick="removeSerieLinha(${i})">✕</button>`;
+    wrap.appendChild(row);
+  });
+}
+function addSerieLinha(){
+  if(!seriesContext) return;
+  const ex = data.training[seriesContext.day].exercises[seriesContext.index];
+  ex.series = ex.series || [];
+  ex.series.push({reps:'',kg:'',rpe:'',descanso:''});
+  renderSeriesRows(ex.series, ex.videoUrl);
+}
+function removeSerieLinha(i){
+  if(!seriesContext) return;
+  const ex = data.training[seriesContext.day].exercises[seriesContext.index];
+  ex.series.splice(i,1);
+  if(!ex.series.length) ex.series.push({reps:'',kg:'',rpe:'',descanso:''});
+  renderSeriesRows(ex.series, ex.videoUrl);
+}
+function saveSeriesModal(){
+  if(!seriesContext) return;
+  const ex = data.training[seriesContext.day].exercises[seriesContext.index];
+  const rows = [...document.querySelectorAll('#seriesRows .seriesRow')];
+  ex.series = rows.map(row=>{
+    const inputs = row.querySelectorAll('input');
+    return {
+      reps: inputs[0].value,
+      kg: inputs[1].value,
+      rpe: inputs[2].value,
+      descanso: inputs[3].value
+    };
+  });
+  save(); closeSeriesModal(); renderTreino();
 }
 
-/* ------------------ Export ------------------ */
-function exportar(){
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "miria-sculpt-backup.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
+function finalizarTreinoDia(){
+  const prog = getDayProgress(diaAtivo);
+  const record = {date:hoje(), day:diaAtivo, title:data.training[diaAtivo].title, completed:prog.done, total:prog.total};
+  data.history = data.history.filter(r => !(r.date===record.date && r.day===record.day));
+  data.history.unshift(record);
+  save(); renderHistorico(); go('historico');
+}
+function resetTreinoHoje(){
+  data.training[diaAtivo].exercises.forEach(ex=> delete data.done[statusKey(hoje(), diaAtivo, ex.name)]);
+  save(); renderTreino(); renderInicio();
 }
 
-/* ------------------ Init ------------------ */
+/* Água */
+function ensureAguaDay(){ if(!data.agua[hoje()]) data.agua[hoje()] = { total:0, stack:[] }; }
+function addAgua(v){ ensureAguaDay(); data.agua[hoje()].total += v; data.agua[hoje()].stack.push(v); save(); renderAgua(); renderInicio(); }
+function addAguaManual(){ const v=Number(document.getElementById('aguaManual').value||0); if(v>0){ addAgua(v); document.getElementById('aguaManual').value=''; } }
+function desfazerAgua(){ ensureAguaDay(); const last=data.agua[hoje()].stack.pop(); if(last) data.agua[hoje()].total-=last; save(); renderAgua(); renderInicio(); }
+function zerarAgua(){ data.agua[hoje()]={ total:0, stack:[] }; save(); renderAgua(); renderInicio(); }
+function aguaMedia7(){ let sum=0,cnt=0; for(let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); const k=d.toISOString().slice(0,10); if(data.agua[k]){ sum += Number(data.agua[k].total||0); cnt++; }} return cnt?Math.round(sum/cnt):0; }
+function renderAgua(){ ensureAguaDay(); const meta=Number(document.getElementById('aguaMeta').value||2500); const total=Number(data.agua[hoje()].total||0); document.getElementById('aguaStatus').textContent = total + ' ml'; document.getElementById('aguaBar').style.width = clamp(total/meta*100,0,100)+'%'; document.getElementById('aguaMedia').textContent = aguaMedia7() + ' ml'; }
+
+/* Proteína */
+const fatores = { frango:{tipo:'g',por:100,prot:31}, carne:{tipo:'g',por:100,prot:26}, ovo:{tipo:'un',por:1,prot:6}, iog:{tipo:'un',por:1,prot:10}, queijo:{tipo:'g',por:100,prot:25}, whey:{tipo:'sc',por:1,prot:20} };
+function ensureProtDay(){ if(!data.prot[hoje()]) data.prot[hoje()]={ total:0, stack:[], items:[] }; }
+function protMedia7(){ let sum=0,cnt=0; for(let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); const k=d.toISOString().slice(0,10); if(data.prot[k]){ sum += Number(data.prot[k].total||0); cnt++; }} return cnt?Math.round(sum/cnt):0; }
+function calcProt(item,qtd){ const cfg=fatores[item]; qtd=Number(qtd||0); if(!cfg||qtd<=0) return 0; if(cfg.por===1) return qtd*cfg.prot; return (qtd/cfg.por)*cfg.prot; }
+function updateProtQtdLabel(){ const cfg=fatores[document.getElementById('protItem').value]; document.getElementById('protQtdLabel').textContent = cfg.tipo==='g' ? 'Quantidade (g)' : (cfg.tipo==='un' ? 'Quantidade (unidades)' : 'Quantidade (scoops)'); }
+function addProtItem(){ ensureProtDay(); const item=document.getElementById('protItem').value; const qtd=Number(document.getElementById('protQtd').value||0); if(qtd<=0) return; const prot=calcProt(item,qtd); const nome=document.getElementById('protItem').selectedOptions[0].textContent; data.prot[hoje()].total += prot; data.prot[hoje()].stack.push({item,qtd,prot}); data.prot[hoje()].items.push({ts:Date.now(), item, nome, qtd, prot}); save(); document.getElementById('protQtd').value=''; renderProt(); renderInicio(); }
+function desfazerProt(){ ensureProtDay(); const last=data.prot[hoje()].stack.pop(); if(last){ data.prot[hoje()].total -= last.prot; data.prot[hoje()].items.pop(); } save(); renderProt(); renderInicio(); }
+function zerarProt(){ data.prot[hoje()]={ total:0, stack:[], items:[] }; save(); renderProt(); renderInicio(); }
+function renderProt(){ ensureProtDay(); const meta=Number(document.getElementById('protMeta').value||100); const total=Number(data.prot[hoje()].total||0); document.getElementById('protStatus').textContent = Math.round(total); document.getElementById('protFaltam').textContent = Math.max(0,Math.round(meta-total)); document.getElementById('protBar').style.width = clamp(total/meta*100,0,100)+'%'; document.getElementById('protMedia').textContent = protMedia7(); const items=data.prot[hoje()].items||[]; document.getElementById('protLista').innerHTML = items.length ? items.map(it=>`• ${it.nome} — <b>${it.qtd}</b> → <b>${Math.round(it.prot)}g</b>`).join('<br>') : 'Sem itens hoje.'; }
+
+/* Intestino */
+function salvarIntestino(){ data.intestino[hoje()] = { foi:document.getElementById('intSel').value, chia:document.getElementById('chiaCheck').checked }; save(); renderIntestino(); }
+function limparIntestino(){ data.intestino={}; save(); renderIntestino(); }
+function renderIntestino(){ const rec=data.intestino[hoje()]; if(rec){ document.getElementById('intSel').value=rec.foi; document.getElementById('chiaCheck').checked=!!rec.chia; } const entries=Object.entries(data.intestino).sort((a,b)=>b[0].localeCompare(a[0])).slice(0,7); document.getElementById('intHist').innerHTML = entries.length ? entries.map(([d,v])=>`<b>${d}</b> — ${v.foi}${v.chia?' + chia':''}`).join('<br>') : 'Sem histórico ainda.'; }
+
+/* Medidas */
+function ampNota(val){ if(!isFinite(val)) return '—'; if(val>=1.35) return 'Ampulheta forte'; if(val>=1.28) return 'Ampulheta boa'; if(val>=1.20) return 'Em construção'; return 'Foco em glúteo + postura'; }
+function salvarMedidas(){ const rec={ data:hoje(), peso:Number(document.getElementById('mPeso').value||0), cintura:Number(document.getElementById('mCint').value||0), abdomen:Number(document.getElementById('mAbd').value||0), gluteo:Number(document.getElementById('mGlu').value||0) }; if(!rec.cintura || !rec.gluteo){ alert('Preencha pelo menos cintura e glúteo.'); return; } data.medidas.push(rec); save(); renderMedidas(); renderInicio(); }
+function limparMedidas(){ data.medidas=[]; save(); renderMedidas(); renderInicio(); }
+function renderMedidas(){ const list=data.medidas||[]; if(list.length){ const last=list[list.length-1]; document.getElementById('mPeso').value = last.peso || ''; document.getElementById('mCint').value = last.cintura || ''; document.getElementById('mAbd').value = last.abdomen || ''; document.getElementById('mGlu').value = last.gluteo || ''; const ratio=last.gluteo/last.cintura; document.getElementById('ampResult').textContent = fmt(ratio,2); document.getElementById('ampText').textContent = ampNota(ratio); document.getElementById('pesoLast').textContent = last.peso || '—'; } else { document.getElementById('ampResult').textContent='—'; document.getElementById('ampText').textContent='adicione cintura e glúteo'; document.getElementById('pesoLast').textContent='—'; } const last10=list.slice(-10).reverse(); document.getElementById('gluteoHist').innerHTML = last10.length ? last10.map(r=>`• <b>${r.data}</b> — glúteo: <b>${r.gluteo}cm</b> • cintura: ${r.cintura}cm`).join('<br>') : 'Sem registros ainda.'; }
+
+/* Fotos */
+function salvarFoto(){ const url=(document.getElementById('fotoUrl').value||'').trim(); const obs=(document.getElementById('fotoObs').value||'').trim(); if(!url){ alert('Cole o link da foto.'); return; } data.fotos.push({data:hoje(), url, obs}); save(); document.getElementById('fotoUrl').value=''; document.getElementById('fotoObs').value=''; renderFotos(); }
+function limparFotos(){ data.fotos=[]; save(); renderFotos(); }
+function renderFotos(){ const list=(data.fotos||[]).slice(-15).reverse(); document.getElementById('fotoHist').innerHTML = list.length ? list.map(f=>`• <b>${f.data}</b> — <a class="videoLink" href="${f.url}" target="_blank" rel="noopener">Abrir</a> <span class="muted2">${f.obs||''}</span>`).join('<br><br>') : 'Sem links ainda.'; }
+
+/* Perfil */
+const perfilDias = ['SEG','TER','QUA','QUI','SEX','SAB','DOM'];
+function renderPerfil(){
+  document.getElementById('pNome').value = data.profile.nome || '';
+  document.getElementById('pIdade').value = data.profile.idade || '';
+  document.getElementById('pPeso').value = data.profile.peso || '';
+  document.getElementById('pAltura').value = data.profile.altura || '';
+  document.getElementById('pObjetivo').value = data.profile.objetivo || 'Hipertrofia';
+  document.getElementById('pExperiencia').value = data.profile.experiencia || 'Intermediário (6-24 meses)';
+  document.getElementById('pMetaDias').value = data.profile.metaDias || 5;
+  document.getElementById('perfilDiasRow').innerHTML = perfilDias.map(d=>`<div class="pill ${data.profile.diasSemana.includes(d)?'active':''}" onclick="togglePerfilDia('${d}')">${d}</div>`).join('');
+}
+function togglePerfilDia(d){
+  const idx = data.profile.diasSemana.indexOf(d);
+  if(idx>=0) data.profile.diasSemana.splice(idx,1); else data.profile.diasSemana.push(d);
+  save(); renderPerfil();
+}
+function salvarPerfil(){
+  data.profile.nome = document.getElementById('pNome').value || 'Miriã';
+  data.profile.idade = document.getElementById('pIdade').value;
+  data.profile.peso = document.getElementById('pPeso').value;
+  data.profile.altura = document.getElementById('pAltura').value;
+  data.profile.objetivo = document.getElementById('pObjetivo').value;
+  data.profile.experiencia = document.getElementById('pExperiencia').value;
+  data.profile.metaDias = clamp(Number(document.getElementById('pMetaDias').value||5),1,7);
+  save(); renderInicio(); renderPerfil(); alert('Perfil salvo.');
+}
+
+/* Histórico */
+function renderHistorico(){
+  const list=[...data.history].sort((a,b)=> (b.date+b.day).localeCompare(a.date+a.day));
+  const weekCount = list.filter(x=>withinLastDays(x.date,7)).length;
+  const exCount = list.reduce((acc,x)=>acc + Number(x.completed||0), 0);
+  document.getElementById('histWeekCount').textContent = weekCount;
+  document.getElementById('histExercises').textContent = exCount;
+  document.getElementById('historicoLista').innerHTML = list.length ? list.map(r=>`<div class="historyItem"><div class="muted small">${r.date}</div><div style="font-size:18px; font-weight:900; margin-top:4px">${r.day} • ${r.title}</div><div class="sub" style="margin-top:6px">${r.completed} exercícios concluídos de ${r.total}</div></div>`).join('') : '<div class="note">Ainda não há treino finalizado salvo no histórico.</div>';
+}
+function withinLastDays(dateStr, days){ const d=new Date(dateStr+'T12:00:00'); const now=new Date(); const diff=(now-d)/(1000*60*60*24); return diff>=0 && diff<=days; }
+
+function exportar(){ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='miria-sculpt-backup.json'; a.click(); URL.revokeObjectURL(a.href); }
+
 function init(){
-  // keep meta labels synced
-  document.getElementById("aguaMeta").addEventListener("input", ()=>{ save(); renderAgua(); renderDashboard(); });
-  document.getElementById("protMeta").addEventListener("input", ()=>{ save(); renderProt(); renderDashboard(); });
-
-  updateProtQtdLabel();
-  renderWeekPills();
-  renderTreino();
-  renderAgua();
-  renderProt();
-  renderIntestino();
-  renderMedidas();
-  renderFotos();
-  renderDashboard();
-
-  // PWA
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("./sw.js").catch(()=>{});
-  }
+  document.getElementById('protItem').addEventListener('change', updateProtQtdLabel);
+  document.getElementById('aguaMeta').addEventListener('input', ()=>{ save(); renderAgua(); renderInicio(); });
+  document.getElementById('protMeta').addEventListener('input', ()=>{ save(); renderProt(); renderInicio(); });
+  renderDayStrips(); renderTreino(); updateProtQtdLabel(); renderAgua(); renderProt(); renderIntestino(); renderMedidas(); renderFotos(); renderPerfil(); renderHistorico(); renderInicio();
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
 }
 init();
 </script>
